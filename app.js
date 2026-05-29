@@ -20,21 +20,36 @@
   function rnd(v,d){ return Math.round(v*Math.pow(10,d))/Math.pow(10,d); }
 
   function renderKPIs(){
-    s('k1', cny(T.\u652f\u51fa));
-    s('k1s', '\u5c55\u793a '+fmt(T.\u5c55\u793a\u6b21\u6570,0)+' | \u70b9\u51fb '+fmt(T.\u70b9\u51fb\u6b21\u6570,0)+' | \u5b89\u88c5 '+fmt(T.\u5b89\u88c5\u6b21\u6570,0));
-    s('k5', fmt(T.\u5b89\u88c5\u6b21\u6570,0));
-    s('k5r', pct(T.\u5b89\u88c5\u7387));
-    s('k2', fmt(T.\u6ce8\u518c\u4eba\u6570,0));
-    s('k2r', pct(T.\u6ce8\u518c\u7387));
-    s('k3', cny(T.\u603b\u5145\u503c\u91d1\u989d));
-    s('k3r', pct(T.roi));
-    var rc = T.\u652f\u51fa / n(T.\u6ce8\u518c\u4eba\u6570);
+    var fc = getFilt();
+    var tSp=0, tImp=0, tClk=0, tIns=0, tReg=0, tRev=0;
+    fc.forEach(function(c){
+      tSp  += n(c.\u652f\u51fa);
+      tImp += n(c.\u5c55\u793a\u6b21\u6570);
+      tClk += n(c.\u70b9\u51fb\u6b21\u6570);
+      tIns += n(c.\u5b89\u88c5\u6b21\u6570);
+      tReg += n(c.\u6ce8\u518c\u4eba\u6570);
+      tRev += n(c.\u603b\u5145\u503c\u91d1\u989d);
+    });
+    s('k1', cny(tSp));
+    s('k1s', '\u5c55\u793a '+fmt(tImp,0)+' | \u70b9\u51fb '+fmt(tClk,0)+' | \u5b89\u88c5 '+fmt(tIns,0));
+    s('k5', fmt(tIns,0));
+    s('k5r', pct(tIns/tImp));
+    s('k2', fmt(tReg,0));
+    s('k2r', pct(tReg/tIns));
+    s('k3', cny(tRev));
+    s('k3r', pct(tSp>0?tRev/tSp:0));
+    var rc = tReg>0 ? tSp/tReg : 0;
     s('k4', isFinite(rc) ? cny(rc) : '\u2014');
-    var bc = n(BR.\u652f\u51fa)/n(BR.\u6ce8\u518c\u4eba\u6570);
-    var nbc = n(NBR.\u652f\u51fa)/n(NBR.\u6ce8\u518c\u4eba\u6570);
+    // brand/nonbrand from filtered
+    var bSp=0,bReg=0,nbSp=0,nbReg=0;
+    fc.forEach(function(c){
+      if(c.\u8bcd\u7c7b==='\u54c1\u724c\u8bcd'){ bSp+=n(c.\u652f\u51fa); bReg+=n(c.\u6ce8\u518c\u4eba\u6570); }
+      else { nbSp+=n(c.\u652f\u51fa); nbReg+=n(c.\u6ce8\u518c\u4eba\u6570); }
+    });
+    var bc = bReg>0 ? bSp/bReg : 0, nbc = nbReg>0 ? nbSp/nbReg : 0;
     s('k4s', '\u54c1\u724c \u00a5'+(isFinite(bc)?bc.toFixed(2):'\u2014')+' | \u975e\u54c1\u724c \u00a5'+(isFinite(nbc)?nbc.toFixed(2):'\u2014'));
-    var matched = CAMS.filter(function(c){ return n(c.\u6fc0\u6d3b\u6570)>0 || n(c.\u6ce8\u518c\u4eba\u6570)>0; }).length;
-    s('mRate', matched+'/'+CAMS.length+' ('+(matched/CAMS.length*100).toFixed(1)+'%)');
+    var matched = fc.filter(function(c){ return n(c.\u6fc0\u6d3b\u6570)>0 || n(c.\u6ce8\u518c\u4eba\u6570)>0; }).length;
+    s('mRate', matched+'/'+fc.length+' ('+(matched/fc.length*100).toFixed(1)+'%)');
     var ds = DY.map(function(d){return d.date;}).sort();
     s('dUntil', ds.length ? ds[ds.length-1] : '\u2014');
   }
@@ -48,13 +63,9 @@
       s(id+'rr', pct(rr));
       s(id+'roi', isFinite(roi) ? roi.toFixed(3) : '\u2014');
     }
-    var mk = getMonthKey();
-    var monthCams = CAMS.filter(function(c){
-      var m = '2026-' + c.date.split('-')[0];
-      return m === mk;
-    });
+    var fc = getFilt();
     var bSp=0, bReg=0, bRev=0, bAct=0, nbSp=0, nbReg=0, nbRev=0, nbAct=0;
-    monthCams.forEach(function(c){
+    fc.forEach(function(c){
       if(c.\u8bcd\u7c7b === '\u54c1\u724c\u8bcd'){
         bSp  += n(c.\u652f\u51fa);
         bReg += n(c.\u6ce8\u518c\u4eba\u6570);
