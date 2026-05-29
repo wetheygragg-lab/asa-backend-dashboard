@@ -389,8 +389,8 @@
 var mk = getMonthKey();
     var t = MONTHLY[mk] || {spend:0,reg:0,installs:0,nbReg:0,nbRegCost:0};
 
-    // Compute brand/nonbrand from filtered campaigns
-    var filtCams = getFilt();
+    // Compute brand/nonbrand from KPI-filtered campaigns (NOT date-filtered)
+    var filtCams = getKpiFilt();
     var nbSp=0, nbReg=0, totalInstalls=0;
     filtCams.forEach(function(c){
       totalInstalls += n(c.\u5b89\u88c5\u6b21\u6570);
