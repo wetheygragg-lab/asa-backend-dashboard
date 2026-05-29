@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASA 广告后端分析看板</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<h1>ASA 广告后端分析看板</h1>
+<p class="sub">匹配率: <span id="mRate">—</span> &nbsp;|&nbsp; 数据截于: <span id="dUntil">—</span> (后端数据可能有1~2天延迟)</p>
+
+  <div class="kpi-section">
+    <div class="kpi-section-hd">
+      <span class="kpi-section-title">📊 <span id="kpiMonthLabel">本月</span> KPI 目标</span>
+      <select id="monthSel" class="month-sel"></select>
+      <button class="btn" id="editKpiBtn">编辑目标</button>
+    </div>
+    <div class="kpi-section-body" id="kpiBody"></div>
+  </div>
+
+<div class="kpi-grid">
+  <div class="kpi">
+    <div class="label">总支出</div>
+    <div class="value" id="k1">—</div>
+    <div class="sub" id="k1s"></div>
+  </div>
+  <div class="kpi green">
+    <div class="label">总安装量</div>
+    <div class="value" id="k5">—</div>
+    <div class="sub">安装率 <span id="k5r">—</span></div>
+  </div>
+  <div class="kpi blue">
+    <div class="label">注册人数</div>
+    <div class="value" id="k2">—</div>
+    <div class="sub">注册率 <span id="k2r">—</span></div>
+  </div>
+  <div class="kpi yellow">
+    <div class="label">总充值</div>
+    <div class="value" id="k3">—</div>
+    <div class="sub">充值 ROI <span id="k3r">—</span></div>
+  </div>
+  <div class="kpi red">
+    <div class="label">注册成本</div>
+    <div class="value" id="k4">—</div>
+    <div class="sub" id="k4s"></div>
+  </div>
+</div>
+
+<div class="charts">
+  <div class="chart-box"><h3>📈 支出与充值趋势</h3><canvas id="c0"></canvas></div>
+  <div class="chart-box"><h3>📉 点击率与 ROI 趋势</h3><canvas id="c1"></canvas></div>
+</div>
+
+<div class="brand-row">
+  <div class="brand-card brand">
+    <h3>🌿 品牌词</h3>
+    <div class="brow"><span class="bl">支出</span><span class="bv" id="bsp">—</span></div>
+    <div class="brow"><span class="bl">注册人数</span><span class="bv g" id="breg">—</span></div>
+    <div class="brow"><span class="bl">注册成本</span><span class="bv y" id="brc">—</span></div>
+    <div class="brow"><span class="bl">注册率</span><span class="bv" id="brr">—</span></div>
+    <div class="brow"><span class="bl">充值 ROI</span><span class="bv g" id="broi">—</span></div>
+  </div>
+  <div class="brand-card nonbrand">
+    <h3>🔍 非品牌词</h3>
+    <div class="brow"><span class="bl">支出</span><span class="bv" id="nbsp">—</span></div>
+    <div class="brow"><span class="bl">注册人数</span><span class="bv g" id="nbreg">—</span></div>
+    <div class="brow"><span class="bl">注册成本</span><span class="bv y" id="nbrc">—</span></div>
+    <div class="brow"><span class="bl">注册率</span><span class="bv" id="nbrr">—</span></div>
+    <div class="brow"><span class="bl">充值 ROI</span><span class="bv g" id="nbroi">—</span></div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <button class="btn active" data-f="all">全部</button>
+  <button class="btn" data-f="7d">近7天</button>
+  <button class="btn" data-f="month">本月</button>
+  <button class="btn" data-f="brand">品牌词</button>
+  <button class="btn" data-f="nonbrand">非品牌词</button>
+  <div class="dp-wrap">
+    <button class="dp-btn" id="dpBtn">选择日期 ▾</button>
+    <div class="dp-drop" id="dpDrop">
+      <div class="dp-chips">
+        <span class="dp-chip" data-qf="all">全部</span>
+        <span class="dp-chip" data-qf="7d">近7天</span>
+        <span class="dp-chip" data-qf="month">本月</span>
+        <span class="dp-chip" data-qf="clear">清除</span>
+      </div>
+      <div class="dates-grid" id="dGrid"></div>
+      <div class="dp-foot">
+        <button class="clr" id="dpClr">清除</button>
+        <span class="dp-note chosen" id="dNote">已选 0 天</span>
+        <button id="dpOk">确定</button>
+      </div>
+    </div>
+  </div>
+  <span class="dp-note" id="dateTag"></span>
+  <div class="dp-wrap2">
+    <button class="dp-btn2" id="sortBtn">按支出排序 ▾</button>
+    <div class="dp-drop2" id="sortDrop">
+      <div class="droption sel" data-sort="支出">按支出排序</div>
+      <div class="droption" data-sort="roi">按 ROI 排序</div>
+      <div class="droption" data-sort="注册人数">按注册排序</div>
+      <div class="droption" data-sort="激活数">按激活排序</div>
+      <div class="droption" data-sort="点击率">按点击率排序</div>
+    </div>
+  </div>
+  <button class="btn" id="expBtn" style="margin-left:auto">📥 导出 CSV</button>
+</div>
+
+<div class="table-wrap">
+  <div class="table-head">
+    <b>广告系列明细（共 <b id="camCount">—</b> 条）</b>
+    <span style="margin-left:12px;font-size:11px;color:#71767b">✅ 合计行结布表帽部</span>
+    <span style="margin-left:auto" id="pgInfo"></span>
+  </div>
+  <div id="loadingMsg" class="loading">数据加载中...</div>
+  <div style="overflow-x:auto;max-height:65vh;overflow-y:auto" id="tableScroll">
+    <table>
+      <thead>
+        <tr>
+          <th data-col="date">日期 <span class="si">↕</span></th>
+          <th data-col="广告系列名称">广告系列 <span class="si">↕</span></th>
+          <th data-col="词类">词类 <span class="si">↕</span></th>
+          <th data-col="支出">支出 <span class="si">↕</span></th>
+          <th data-col="展示次数">展示 <span class="si">↕</span></th>
+          <th data-col="点击次数">点击 <span class="si">↕</span></th>
+          <th data-col="安装次数">安装 <span class="si">↕</span></th>
+          <th data-col="激活数">激活 <span class="si">↕</span></th>
+          <th data-col="注册人数">注册 <span class="si">↕</span></th>
+          <th data-col="总充值金额">充值 <span class="si">↕</span></th>
+          <th data-col="安装成本">安装成本 <span class="si">↕</span></th>
+          <th data-col="注册成本">注册成本 <span class="si">↕</span></th>
+          <th data-col="点击率">点击率 <span class="si">↕</span></th>
+          <th data-col="安装率">安装率 <span class="si">↕</span></th>
+          <th data-col="激活率">激活率 <span class="si">↕</span></th>
+          <th data-col="注册率">注册率 <span class="si">↕</span></th>
+          <th data-col="roi">ROI <span class="si">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="camBody"></tbody>
+    </table>
+  </div>
+  <div class="pg-wrap">
+    <div>
+      <button class="pg-btn" id="pgPrev">◀ 上一页</button>
+      <button class="pg-btn" id="pgNext">下一页 ▶</button>
+    </div>
+    <span id="pgLabel"></span>
+  </div>
+</div>
+
+  <div class="kpi-modal" id="kpiModal">
+    <div class="kpi-modal-box">
+      <h3>💫 KPI 目标设置</h3>
+      <div class="form-row"><label>支出目标（￥）</label><input type="number" id="kpiSpend" placeholder="输入支出目标"></div>
+      <div class="form-row"><label>注册人数目标</label><input type="number" id="kpiReg" placeholder="输入注册人数目标"></div>
+      <div class="form-row"><label>总安装量目标</label><input type="number" id="kpiInstalls" placeholder="输入安装量目标"></div>
+      <div class="form-row"><label>非品牌注册目标</label><input type="number" id="kpiNbReg" placeholder="输入非品牌注册人数"></div>
+      <div class="form-row"><label>非品牌注册成本</label><input type="number" id="kpiNbRegCost" placeholder="输入目标值（￥）"></div>
+      <div class="form-foot">
+        <button class="btn-cancel" id="kpiCancelBtn">取消</button>
+        <button class="btn-ok" id="kpiSaveBtn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  </body>
+  </html>
