@@ -19,22 +19,9 @@
 
   function rnd(v,d){ return Math.round(v*Math.pow(10,d))/Math.pow(10,d); }
 
-  // KPI/品牌卡片专用：不过滤日期，只过滤品牌/非品牌
+  // KPI/品牌卡片专用：永远返回当月全量数据，完全忽略任何品牌/非品牌/日期筛选
   function getKpiFilt(){
-    var r = CAMS;
-    if(STATE.filter === 'brand')
-      r = r.filter(function(c){ return c.\u8bcd\u7c7b === '\u54c1\u724c\u8bcd'; });
-    else if(STATE.filter === 'nonbrand')
-      r = r.filter(function(c){ return c.\u8bcd\u7c7b === '\u975e\u54c1\u724c\u8bcd'; });
-    else if(STATE.filter === 'month'){
-      var dates30 = allDates.slice(-30);
-      r = r.filter(function(c){ return dates30.indexOf(c.date) !== -1; });
-    }
-    else if(STATE.filter === '7d'){
-      var d7 = allDates.slice(-7);
-      r = r.filter(function(c){ return d7.indexOf(c.date) !== -1; });
-    }
-    return r;
+    return CAMS;
   }
 
   function renderKPIs(){
