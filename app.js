@@ -19,8 +19,26 @@
 
   function rnd(v,d){ return Math.round(v*Math.pow(10,d))/Math.pow(10,d); }
 
+  // KPI/品牌卡片专用：不过滤日期，只过滤品牌/非品牌
+  function getKpiFilt(){
+    var r = CAMS;
+    if(STATE.filter === 'brand')
+      r = r.filter(function(c){ return c.\u8bcd\u7c7b === '\u54c1\u724c\u8bcd'; });
+    else if(STATE.filter === 'nonbrand')
+      r = r.filter(function(c){ return c.\u8bcd\u7c7b === '\u975e\u54c1\u724c\u8bcd'; });
+    else if(STATE.filter === 'month'){
+      var dates30 = allDates.slice(-30);
+      r = r.filter(function(c){ return dates30.indexOf(c.date) !== -1; });
+    }
+    else if(STATE.filter === '7d'){
+      var d7 = allDates.slice(-7);
+      r = r.filter(function(c){ return d7.indexOf(c.date) !== -1; });
+    }
+    return r;
+  }
+
   function renderKPIs(){
-    var fc = getFilt();
+    var fc = getKpiFilt();
     var tSp=0, tImp=0, tClk=0, tIns=0, tReg=0, tRev=0;
     fc.forEach(function(c){
       tSp  += n(c.\u652f\u51fa);
@@ -63,7 +81,7 @@
       s(id+'rr', pct(rr));
       s(id+'roi', isFinite(roi) ? roi.toFixed(3) : '\u2014');
     }
-    var fc = getFilt();
+    var fc = getKpiFilt();
     var bSp=0, bReg=0, bRev=0, bAct=0, nbSp=0, nbReg=0, nbRev=0, nbAct=0;
     fc.forEach(function(c){
       if(c.\u8bcd\u7c7b === '\u54c1\u724c\u8bcd'){
