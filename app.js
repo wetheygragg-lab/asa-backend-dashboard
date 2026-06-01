@@ -261,13 +261,6 @@
 
   function setSelMonth(v){
     SEL_MONTH = v === 'all' ? null : v;
-    STATE.dates.clear();
-    if(SEL_MONTH){
-      CAMS.forEach(function(c){
-        var m = '2026-' + c.date.split('-')[0];
-        if(m === SEL_MONTH) STATE.dates.add(c.date);
-      });
-    }
     var labelMap = {};
     AVAIL_MONTHS.forEach(function(m){
       var parts = m.split('-');
@@ -275,7 +268,9 @@
     });
     $('kpiMonthLabel').textContent = !SEL_MONTH ? '\u672c\u6708' : (labelMap[SEL_MONTH] || SEL_MONTH);
     STATE.page = 1;
-    render();
+    renderBrand();
+    renderCharts();
+    renderDatesGrid();
     renderKPI();
   }
 
@@ -444,39 +439,22 @@
     if(btn){
       var f = btn.dataset.f;
       STATE.filter = f;
-      if(f === 'brand' || f === 'nonbrand'){
-        if(SEL_MONTH){
-          STATE.dates.clear();
-          CAMS.forEach(function(c){
-            if('2026-'+c.date.split('-')[0] === SEL_MONTH) STATE.dates.add(c.date);
-          });
-        } else {
-          STATE.dates.clear();
-        }
-      } else {
-        STATE.dates.clear();
-      }
       STATE.page = 1;
-      render();
+      renderTable();
+      setFiltBtns();
       renderKPI();
       return;
     }
 
     var chip = t.closest('.dp-chip[data-qf]');
     if(chip){
-      if(chip.dataset.qf === 'clear') STATE.dates.clear();
-      else {
-        STATE.filter = chip.dataset.qf;
-        if((chip.dataset.qf === 'brand' || chip.dataset.qf === 'nonbrand') && SEL_MONTH){
-          STATE.dates.clear();
-          CAMS.forEach(function(c){
-            if('2026-'+c.date.split('-')[0] === SEL_MONTH) STATE.dates.add(c.date);
-          });
-        } else {
-          STATE.dates.clear();
-        }
-      }
-      render(); renderKPI(); return;
+      if(chip.dataset.qf === 'clear'){ STATE.dates.clear(); STATE.filter='all'; STATE.page=1; renderDatesGrid(); renderTable(); setFiltBtns(); renderKPI(); return; }
+      STATE.filter = chip.dataset.qf;
+      STATE.page = 1;
+      renderTable();
+      setFiltBtns();
+      renderKPI();
+      return;
     }
 
     var dcb = t.closest('.dcb[data-d]');
@@ -491,8 +469,8 @@
       return;
     }
 
-    if(t.id === 'dpOk'){ $('dpDrop').classList.remove('open'); STATE.filter='all'; STATE.page=1; render(); renderKPI(); return; }
-    if(t.id === 'dpClr'){ STATE.dates.clear(); renderDatesGrid(); render(); renderKPI(); return; }
+    if(t.id === 'dpOk'){ $('dpDrop').classList.remove('open'); STATE.filter='all'; STATE.page=1; renderTable(); setFiltBtns(); renderKPI(); return; }
+    if(t.id === 'dpClr'){ STATE.dates.clear(); STATE.filter='all'; renderDatesGrid(); renderTable(); setFiltBtns(); renderKPI(); return; }
 
     var th = t.closest('th[data-col]');
     if(th){
