@@ -97,8 +97,12 @@
   }
 
   function renderDatesGrid(){
+    var mk = getMonthKey();
+    var monthDates = allDates.filter(function(d){
+      return '2026-' + d.split('-')[0] === mk;
+    });
     var g = $('dGrid');
-    g.innerHTML = allDates.map(function(d){
+    g.innerHTML = monthDates.map(function(d){
       return '<span class="dcb'+(STATE.dates.has(d)?' sel':'')+'" data-d="'+d+'">'+d+'</span>';
     }).join('');
     var n = STATE.dates.size;
@@ -469,8 +473,8 @@
       return;
     }
 
-    if(t.id === 'dpOk'){ $('dpDrop').classList.remove('open'); STATE.filter='all'; STATE.page=1; renderTable(); setFiltBtns(); renderKPI(); return; }
-    if(t.id === 'dpClr'){ STATE.dates.clear(); STATE.filter='all'; renderDatesGrid(); renderTable(); setFiltBtns(); renderKPI(); return; }
+    if(t.id === 'dpOk'){ $('dpDrop').classList.remove('open'); STATE.page=1; renderTable(); renderKPI(); return; }
+    if(t.id === 'dpClr'){ STATE.dates.clear(); renderDatesGrid(); renderTable(); renderKPI(); return; }
 
     var th = t.closest('th[data-col]');
     if(th){
