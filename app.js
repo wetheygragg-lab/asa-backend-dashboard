@@ -97,12 +97,8 @@
   }
 
   function renderDatesGrid(){
-    var mk = getMonthKey();
-    var monthDates = allDates.filter(function(d){
-      return '2026-' + d.split('-')[0] === mk;
-    });
     var g = $('dGrid');
-    g.innerHTML = monthDates.map(function(d){
+    g.innerHTML = allDates.map(function(d){
       return '<span class="dcb'+(STATE.dates.has(d)?' sel':'')+'" data-d="'+d+'">'+d+'</span>';
     }).join('');
     var n = STATE.dates.size;
@@ -265,6 +261,13 @@
 
   function setSelMonth(v){
     SEL_MONTH = v === 'all' ? null : v;
+    STATE.dates.clear();
+    if(SEL_MONTH){
+      CAMS.forEach(function(c){
+        var m = '2026-' + c.date.split('-')[0];
+        if(m === SEL_MONTH) STATE.dates.add(c.date);
+      });
+    }
     var labelMap = {};
     AVAIL_MONTHS.forEach(function(m){
       var parts = m.split('-');
@@ -272,9 +275,7 @@
     });
     $('kpiMonthLabel').textContent = !SEL_MONTH ? '\u672c\u6708' : (labelMap[SEL_MONTH] || SEL_MONTH);
     STATE.page = 1;
-    renderBrand();
-    renderCharts();
-    renderDatesGrid();
+    render();
     renderKPI();
   }
 
@@ -293,7 +294,6 @@
     });
     AVAIL_MONTHS = Object.keys(monthSet).sort();
     var curMonth = new Date().getFullYear() + '-' + String(new Date().getMonth()+1).padStart(2,'0');
-    if(AVAIL_MONTHS.indexOf(curMonth) === -1) curMonth = AVAIL_MONTHS[AVAIL_MONTHS.length - 1];
     var labelMap = {};
     AVAIL_MONTHS.forEach(function(m){
       var parts = m.split('-');
@@ -317,11 +317,7 @@
   function getMonthKey(){
     if(SEL_MONTH) return SEL_MONTH;
     var now = new Date();
-    var cur = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
-    if(AVAIL_MONTHS.length && AVAIL_MONTHS.indexOf(cur) === -1){
-      return AVAIL_MONTHS[AVAIL_MONTHS.length - 1];
-    }
-    return cur;
+    return now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
   }
 
   function loadKPI(){
@@ -443,22 +439,39 @@
     if(btn){
       var f = btn.dataset.f;
       STATE.filter = f;
+      if(f === 'brand' || f === 'nonbrand'){
+        if(SEL_MONTH){
+          STATE.dates.clear();
+          CAMS.forEach(function(c){
+            if('2026-'+c.date.split('-')[0] === SEL_MONTH) STATE.dates.add(c.date);
+          });
+        } else {
+          STATE.dates.clear();
+        }
+      } else {
+        STATE.dates.clear();
+      }
       STATE.page = 1;
-      renderTable();
-      setFiltBtns();
+      render();
       renderKPI();
       return;
     }
 
     var chip = t.closest('.dp-chip[data-qf]');
     if(chip){
-      if(chip.dataset.qf === 'clear'){ STATE.dates.clear(); STATE.filter='all'; STATE.page=1; renderDatesGrid(); renderTable(); setFiltBtns(); renderKPI(); return; }
-      STATE.filter = chip.dataset.qf;
-      STATE.page = 1;
-      renderTable();
-      setFiltBtns();
-      renderKPI();
-      return;
+      if(chip.dataset.qf === 'clear') STATE.dates.clear();
+      else {
+        STATE.filter = chip.dataset.qf;
+        if((chip.dataset.qf === 'brand' || chip.dataset.qf === 'nonbrand') && SEL_MONTH){
+          STATE.dates.clear();
+          CAMS.forEach(function(c){
+            if('2026-'+c.date.split('-')[0] === SEL_MONTH) STATE.dates.add(c.date);
+          });
+        } else {
+          STATE.dates.clear();
+        }
+      }
+      render(); renderKPI(); return;
     }
 
     var dcb = t.closest('.dcb[data-d]');
@@ -473,8 +486,8 @@
       return;
     }
 
-    if(t.id === 'dpOk'){ $('dpDrop').classList.remove('open'); STATE.page=1; renderTable(); renderKPI(); return; }
-    if(t.id === 'dpClr'){ STATE.dates.clear(); renderDatesGrid(); renderTable(); renderKPI(); return; }
+    if(t.id === 'dpOk'){ $('dpDrop').classList.remove('open'); STATE.filter='all'; STATE.page=1; render(); renderKPI(); return; }
+    if(t.id === 'dpClr'){ STATE.dates.clear(); renderDatesGrid(); render(); renderKPI(); return; }
 
     var th = t.closest('th[data-col]');
     if(th){
