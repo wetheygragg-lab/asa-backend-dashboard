@@ -294,6 +294,7 @@
     });
     AVAIL_MONTHS = Object.keys(monthSet).sort();
     var curMonth = new Date().getFullYear() + '-' + String(new Date().getMonth()+1).padStart(2,'0');
+    if(AVAIL_MONTHS.indexOf(curMonth) === -1) curMonth = AVAIL_MONTHS[AVAIL_MONTHS.length - 1];
     var labelMap = {};
     AVAIL_MONTHS.forEach(function(m){
       var parts = m.split('-');
@@ -317,7 +318,11 @@
   function getMonthKey(){
     if(SEL_MONTH) return SEL_MONTH;
     var now = new Date();
-    return now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    var cur = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+    if(AVAIL_MONTHS.length && AVAIL_MONTHS.indexOf(cur) === -1){
+      return AVAIL_MONTHS[AVAIL_MONTHS.length - 1];
+    }
+    return cur;
   }
 
   function loadKPI(){
