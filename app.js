@@ -306,7 +306,8 @@
     $('monthSel').onchange = function(){ setSelMonth(this.value); };
 
     s('loadingMsg','');
-    setSelMonth(curMonth);   // 初始化当月筛选状态
+    renderCharts();
+    render();
     loadKPI();
     renderKPI();
   }
