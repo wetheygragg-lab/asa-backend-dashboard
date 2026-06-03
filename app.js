@@ -7,15 +7,6 @@
   var lc0 = null, lc1 = null;
   var AVAIL_MONTHS = [];
   var SEL_MONTH = null;
-  var KPI_MONTH = null;
-
-  // Helper: get campaigns filtered by a specific month key (e.g. '2026-05')
-  function getMonthCams(monthKey){
-    if(!monthKey) return CAMS;
-    return CAMS.filter(function(c){
-      return '2026-' + c.date.split('-')[0] === monthKey;
-    });
-  }
 
   function n(v){ return v == null ? 0 : +v; }
   function fmt(v, d){
@@ -29,39 +20,21 @@
   function rnd(v,d){ return Math.round(v*Math.pow(10,d))/Math.pow(10,d); }
 
   function renderKPIs(){
-    var kCams = getMonthCams(KPI_MONTH);
-    var kT={支出:0,展示次数:0,点击次数:0,安装次数:0,激活数:0,注册人数:0,总充值金额:0,roi:0,安装率:0,注册率:0};
-    if(kCams.length > 0){
-      kT.支出 = kCams.reduce(function(s,c){return s+n(c.支出);},0);
-      kT.展示次数 = kCams.reduce(function(s,c){return s+n(c.展示次数);},0);
-      kT.点击次数 = kCams.reduce(function(s,c){return s+n(c.点击次数);},0);
-      kT.安装次数 = kCams.reduce(function(s,c){return s+n(c.安装次数);},0);
-      kT.激活数 = kCams.reduce(function(s,c){return s+n(c.激活数);},0);
-      kT.注册人数 = kCams.reduce(function(s,c){return s+n(c.注册人数);},0);
-      kT.总充值金额 = kCams.reduce(function(s,c){return s+n(c.总充值金额);},0);
-      kT.roi = kT.支出 > 0 ? kT.总充值金额 / kT.支出 : 0;
-      kT.安装率 = kT.点击次数 > 0 ? kT.安装次数 / kT.点击次数 : 0;
-      kT.注册率 = kT.激活数 > 0 ? kT.注册人数 / kT.激活数 : 0;
-    }
-    var nbCams = kCams.filter(function(c){return c.词类 !== '品牌词';});
-    var kNbSp = nbCams.reduce(function(s,c){return s+n(c.支出);},0);
-    var kNbReg = nbCams.reduce(function(s,c){return s+n(c.注册人数);},0);
-    var kSpend = kT.支出, kInst = kT.安装次数, kReg = kT.注册人数, kRev = kT.总充值金额;
-    s('k1', cny(kSpend));
-    s('k1s', '展示 '+fmt(kT.展示次数,0)+' | 点击 '+fmt(kT.点击次数,0)+' | 安装 '+fmt(kInst,0));
-    s('k5', fmt(kInst,0));
-    s('k5r', pct(kT.安装率));
-    s('k2', fmt(kReg,0));
-    s('k2r', pct(kT.注册率));
-    s('k3', cny(kRev));
-    s('k3r', pct(kT.roi));
-    var rc = kReg > 0 ? kSpend / kReg : 0;
+    s('k1', cny(T.\u652f\u51fa));
+    s('k1s', '\u5c55\u793a '+fmt(T.\u5c55\u793a\u6b21\u6570,0)+' | \u70b9\u51fb '+fmt(T.\u70b9\u51fb\u6b21\u6570,0)+' | \u5b89\u88c5 '+fmt(T.\u5b89\u88c5\u6b21\u6570,0));
+    s('k5', fmt(T.\u5b89\u88c5\u6b21\u6570,0));
+    s('k5r', pct(T.\u5b89\u88c5\u7387));
+    s('k2', fmt(T.\u6ce8\u518c\u4eba\u6570,0));
+    s('k2r', pct(T.\u6ce8\u518c\u7387));
+    s('k3', cny(T.\u603b\u5145\u503c\u91d1\u989d));
+    s('k3r', pct(T.roi));
+    var rc = T.\u652f\u51fa / n(T.\u6ce8\u518c\u4eba\u6570);
     s('k4', isFinite(rc) ? cny(rc) : '\u2014');
-    var bc = (kSpend - kNbSp) / (kReg - kNbReg);
-    var nbc = kNbReg > 0 ? kNbSp / kNbReg : 0;
+    var bc = n(BR.\u652f\u51fa)/n(BR.\u6ce8\u518c\u4eba\u6570);
+    var nbc = n(NBR.\u652f\u51fa)/n(NBR.\u6ce8\u518c\u4eba\u6570);
     s('k4s', '\u54c1\u724c \u00a5'+(isFinite(bc)?bc.toFixed(2):'\u2014')+' | \u975e\u54c1\u724c \u00a5'+(isFinite(nbc)?nbc.toFixed(2):'\u2014'));
-    var matched = kCams.filter(function(c){ return n(c.激活数)>0 || n(c.注册人数)>0; }).length;
-    s('mRate', kCams.length > 0 ? matched+'/'+kCams.length+' ('+(matched/kCams.length*100).toFixed(1)+'%)' : '\u2014');
+    var matched = CAMS.filter(function(c){ return n(c.\u6fc0\u6d3b\u6570)>0 || n(c.\u6ce8\u518c\u4eba\u6570)>0; }).length;
+    s('mRate', matched+'/'+CAMS.length+' ('+(matched/CAMS.length*100).toFixed(1)+'%)');
     var ds = DY.map(function(d){return d.date;}).sort();
     s('dUntil', ds.length ? ds[ds.length-1] : '\u2014');
   }
@@ -75,7 +48,7 @@
       s(id+'rr', pct(rr));
       s(id+'roi', isFinite(roi) ? roi.toFixed(3) : '\u2014');
     }
-    var mk = getKpiMonthKey();
+    var mk = getMonthKey();
     var monthCams = CAMS.filter(function(c){
       var m = '2026-' + c.date.split('-')[0];
       return m === mk;
@@ -286,18 +259,6 @@
     else tag.textContent = '(\u5df2\u9009 '+STATE.dates.size+' \u5929)';
   }
 
-  function setKpiMonth(v){
-    KPI_MONTH = v === 'all' ? null : v;
-    var labelMap = {};
-    AVAIL_MONTHS.forEach(function(m){
-      var parts = m.split('-');
-      labelMap[m] = parseInt(parts[0]) === 2026 ? parts[1] + '\u6708' : m;
-    });
-    $('kpiMonthLabel').textContent = !KPI_MONTH ? '\u672c\u6708' : (labelMap[KPI_MONTH] || KPI_MONTH);
-    renderKPIs();
-    renderKPI();
-  }
-
   function setSelMonth(v){
     SEL_MONTH = v === 'all' ? null : v;
     STATE.dates.clear();
@@ -339,15 +300,14 @@
       var parts = m.split('-');
       labelMap[m] = parseInt(parts[0]) === 2026 ? parts[1] + '\u6708' : m;
     });
-    $('kpiMonthSel').innerHTML = AVAIL_MONTHS.map(function(m){
+    $('monthSel').innerHTML = AVAIL_MONTHS.map(function(m){
       return '<option value="'+m+'"'+(m===curMonth?' selected':'')+'>'+labelMap[m]+'</option>';
     }).join('');
-    $('kpiMonthSel').onchange = function(){ setKpiMonth(this.value); };
+    $('monthSel').onchange = function(){ setSelMonth(this.value); };
 
     s('loadingMsg','');
     renderCharts();
     render();
-    setKpiMonth(curMonth);   // 初始化KPI月份状态
     loadKPI();
     renderKPI();
   }
@@ -355,7 +315,7 @@
   // ── Monthly KPI ─────────────────────────────────────────────────────────────
   var MONTHLY = {};
 
-  function getKpiMonthKey(){
+  function getMonthKey(){
     if(SEL_MONTH) return SEL_MONTH;
     var now = new Date();
     var cur = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
@@ -370,14 +330,14 @@
       var stored = localStorage.getItem('asa_monthly_kpi');
       if(stored) MONTHLY = JSON.parse(stored);
     } catch(e){}
-    var mk = getKpiMonthKey();
+    var mk = getMonthKey();
     if(!MONTHLY[mk]){
       MONTHLY[mk] = {spend:0, reg:0, installs:0, nbReg:0, nbRegCost:0};
     }
   }
 
   function openKpiModal(){
-    var mk = getKpiMonthKey();
+    var mk = getMonthKey();
     var t = MONTHLY[mk] || {};
     $('kpiSpend').value = t.spend || '';
     $('kpiReg').value   = t.reg || '';
@@ -388,7 +348,7 @@
   }
 
   function saveKPI(){
-    var mk = getKpiMonthKey();
+    var mk = getMonthKey();
     MONTHLY[mk] = {
       spend: parseFloat($('kpiSpend').value) || 0,
       reg:   parseFloat($('kpiReg').value)   || 0,
@@ -402,15 +362,16 @@
   }
 
   function renderKPI(){
-    var mk = getKpiMonthKey();
+    var mk = getMonthKey();
     var t = MONTHLY[mk] || {spend:0,reg:0,installs:0,nbReg:0,nbRegCost:0};
 
-    // Compute from KPI_MONTH (independent from page filter SEL_MONTH)
-    var filtCams = getMonthCams(KPI_MONTH);
+    // Compute brand/nonbrand from filtered campaigns
+    var filtCams = getFilt();
     var nbSp=0, nbReg=0, totalInstalls=0;
     filtCams.forEach(function(c){
       totalInstalls += n(c.\u5b89\u88c5\u6b21\u6570);
       if(c.\u8bcd\u7c7b === '\u54c1\u724c\u8bcd'){
+        // brand — not tracked in KPI items
       } else {
         nbSp  += n(c.\u652f\u51fa);
         nbReg += n(c.\u6ce8\u518c\u4eba\u6570);
