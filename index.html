@@ -273,8 +273,8 @@ var KPI_MONTH = null;
 var SEL_MONTH = null;
 var STATE = {filter:'all', search:'', dates:new Set(), sortCol:'date', sortAsc:true};
 
-var labelMap = {"05-01": "05-01\u6708", "05-02": "05-02\u6708", "05-03": "05-03\u6708", "05-04": "05-04\u6708", "05-05": "05-05\u6708", "05-06": "05-06\u6708", "05-07": "05-07\u6708", "05-08": "05-08\u6708", "05-09": "05-09\u6708", "05-10": "05-10\u6708", "05-11": "05-11\u6708", "05-12": "05-12\u6708", "05-13": "05-13\u6708", "05-14": "05-14\u6708", "05-15": "05-15\u6708", "05-16": "05-16\u6708", "05-17": "05-17\u6708", "05-18": "05-18\u6708", "05-19": "05-19\u6708", "05-20": "05-20\u6708", "05-21": "05-21\u6708", "05-22": "05-22\u6708", "05-23": "05-23\u6708", "05-24": "05-24\u6708", "05-25": "05-25\u6708", "05-26": "05-26\u6708", "05-27": "05-27\u6708", "05-28": "05-28\u6708", "05-29": "05-29\u6708", "05-30": "05-30\u6708", "05-31": "05-31\u6708", "06-01": "06-01\u6708", "06-02": "06-02\u6708"};
-var AVAIL_MONTHS = ["05-01", "05-02", "05-03", "05-04", "05-05", "05-06", "05-07", "05-08", "05-09", "05-10", "05-11", "05-12", "05-13", "05-14", "05-15", "05-16", "05-17", "05-18", "05-19", "05-20", "05-21", "05-22", "05-23", "05-24", "05-25", "05-26", "05-27", "05-28", "05-29", "05-30", "05-31", "06-01", "06-02"];
+var labelMap = {"2026-05": "2026\u5e7405\u6708", "2026-06": "2026\u5e7406\u6708"};
+var AVAIL_MONTHS = ["2026-05", "2026-06"];
 var curMonth = AVAIL_MONTHS[AVAIL_MONTHS.length-1];
 
 function $(id){return document.getElementById(id);}
@@ -285,10 +285,13 @@ function cny(v){return '¥'+fmt(v,2);}
 
 function getMonthCams(m){
   if(!m) return D.campaigns;
-  return D.campaigns.filter(function(c){return c.date.substring(0,7)===m;});
+  // c.date is "MM-DD", m is "YYYY-MM"
+  var monthPart = m.substring(5,7); // "05" or "06"
+  return D.campaigns.filter(function(c){return c.date.substring(0,2)===monthPart;});
 }
 function getFilt(){
-  var cams = getMonthCams(SEL_MONTH);
+  // Use KPI_MONTH for month filtering (same as KPI cards)
+  var cams = getMonthCams(KPI_MONTH);
   if(STATE.filter==='brand') cams=cams.filter(function(c){return c.词类==='品牌词';});
   else if(STATE.filter==='nonbrand') cams=cams.filter(function(c){return c.词类==='非品牌词';});
   if(STATE.search){
@@ -303,10 +306,15 @@ function setKpiMonth(v){
   KPI_MONTH = (v==='all'||!v)?null:v;
   $('kpiMonthLabel') && ($('kpiMonthLabel').textContent = !KPI_MONTH?'本月':(labelMap[KPI_MONTH]||KPI_MONTH));
   renderKPIs();
+  renderBrand();
+  renderCharts();
+  renderDaily();
+  render();
 }
 function setSelMonth(v){
   SEL_MONTH = (v==='all'||!v)?null:v;
   render();
+  renderBrand();
 }
 
 function renderKPIs(){
@@ -453,10 +461,10 @@ function init(){
   };
 
   setKpiMonth(curMonth);
-  renderCharts();
-  renderDaily();
-  renderBrand();
+  loadKPI();
+  renderKPI();
   render();
+  renderBrand();
 }
 window.onload=init;
 </script>
