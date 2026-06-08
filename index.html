@@ -146,20 +146,22 @@ function fmtNum(v){if(v==null||isNaN(v))return '—';return v.toLocaleString('en
 function fmtCur(v){if(v==null||isNaN(v))return '—';return '\u00a5'+v.toLocaleString('en-US',{maximumFractionDigits:2});}
 
 function getFiltered(){
-  var start=curRange[0]?new Date(curRange[0]+'T00:00:00'):null;
-  var end=curRange[1]?new Date(curRange[1]+'T23:59:59'):null;
+  var start=curRange[0]?curRange[0]:null;
+  var end=curRange[1]?curRange[1]:null;
   var now=new Date('2026-06-08');
-  var month6=['2026-05','2026-06'];
-  var prevMonth=['2026-04'];
+  var nowStr='2026-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  var s7=new Date(now);s7.setDate(s7.getDate()-7);
+  var s7Str='2026-'+String(s7.getMonth()+1).padStart(2,'0')+'-'+String(s7.getDate()).padStart(2,'0');
+  var s30=new Date(now);s30.setDate(s30.getDate()-30);
+  var s30Str='2026-'+String(s30.getMonth()+1).padStart(2,'0')+'-'+String(s30.getDate()).padStart(2,'0');
   return dailyData.filter(function(r){
-    var parts=r.d.split('-');
-    var d=new Date(2026,parseInt(parts[1])-1,parseInt(parts[2]));
-    if(curFilter==='7d'){var s7=new Date(now);s7.setDate(s7.getDate()-7);if(d<s7)return false;}
-    else if(curFilter==='30d'){var s30=new Date(now);s30.setDate(s30.getDate()-30);if(d<s30)return false;}
+    var md='2026-'+r.d;
+    if(curFilter==='7d'&&md<s7Str)return false;
+    else if(curFilter==='30d'&&md<s30Str)return false;
     else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&r.month!==msel)return false;}
-    else if(curFilter==='prev'&&!prevMonth.includes(r.month))return false;
-    if(start&&d<start)return false;
-    if(end&&d>end)return false;
+    else if(curFilter==='prev'&&r.month!=='2026-04')return false;
+    if(start&&md<start)return false;
+    if(end&&md>end)return false;
     return true;
   });
 }
