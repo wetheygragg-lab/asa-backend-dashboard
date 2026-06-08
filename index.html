@@ -339,14 +339,16 @@ function renderBrandStats(rows){
   });
   var bro=filteredCamp.filter(function(r){return r['词类']==='品牌词';});
   var nbro=filteredCamp.filter(function(r){return r['词类']==='非品牌词';});
-  var bs=sumField(bro,'支出'),br=Math.round(sumField(bro,'注册人数')),ba=Math.round(sumField(bro,'激活数')),bnr=sumField(bro,'新客充值'),btr=sumField(bro,'新客充值率');
-  var nbs=sumField(nbro,'支出'),nbr=Math.round(sumField(nbro,'注册人数')),nba=Math.round(sumField(nbro,'激活数')),nbnr=sumField(nbro,'新客充值'),nbtr=sumField(nbro,'新客充值率');
+  var bs=sumField(bro,'支出'),br=Math.round(sumField(bro,'注册人数')),ba=Math.round(sumField(bro,'激活数')),bnr=sumField(bro,'新客充值'),btr=bs>0?bnr/bs*100:0,bnewRoi=bs>0?bnr/bs:null;
+  var nbs=sumField(nbro,'支出'),nbr=Math.round(sumField(nbro,'注册人数')),nba=Math.round(sumField(nbro,'激活数')),nbnr=sumField(nbro,'新客充值'),nbtr=nbs>0?nbnr/nbs*100:0,nbnewRoi=nbs>0?nbnr/nbs:null;
+  var bRoi=sumField(bro,'总充值'),nbRoi=sumField(nbro,'总充值');
+  var nbTotalRoi=nbs>0?nbRoi/nbs:null,bTotalRoi=bs>0?bRoi/bs:null;
 
   sc('b_spend',bs);si('b_reg',br);sc('b_newR',bnr);
-  sr('b_roi',bs>0?btr/bs:null);sr('b_nroi',bs>0?bnr/bs:null);
+  sr('b_roi',bTotalRoi);sr('b_nroi',bnewRoi);
   sc('b_rcost',br>0?bs/br:null);si('b_act',ba);spct('b_nr',btr);
   sc('nb_spend',nbs);si('nb_reg',nbr);sc('nb_newR',nbnr);
-  sr('nb_roi',nbs>0?nbtr/nbs:null);sr('nb_nroi',nbs>0?nbnr/nbs:null);
+  sr('nb_roi',nbTotalRoi);sr('nb_nroi',nbnewRoi);
   sc('nb_rcost',nbr>0?nbs/nbr:null);si('nb_act',nba);spct('nb_nr',nbtr);
 }
 
