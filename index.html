@@ -146,13 +146,14 @@ function fmtNum(v){if(v==null||isNaN(v))return '—';return v.toLocaleString('en
 function fmtCur(v){if(v==null||isNaN(v))return '—';return '\u00a5'+v.toLocaleString('en-US',{maximumFractionDigits:2});}
 
 function getFiltered(){
-  var start=curRange[0]?new Date(curRange[0]):null;
+  var start=curRange[0]?new Date(curRange[0]+'T00:00:00'):null;
   var end=curRange[1]?new Date(curRange[1]+'T23:59:59'):null;
   var now=new Date('2026-06-08');
   var month6=['2026-05','2026-06'];
   var prevMonth=['2026-04'];
   return dailyData.filter(function(r){
-    var d=new Date('2026/'+r.d.replace(/-/g,'/'));
+    var parts=r.d.split('-');
+    var d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
     if(curFilter==='7d'){var s7=new Date(now);s7.setDate(s7.getDate()-7);if(d<s7)return false;}
     else if(curFilter==='30d'){var s30=new Date(now);s30.setDate(s30.getDate()-30);if(d<s30)return false;}
     else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&r.month!==msel)return false;}
