@@ -199,7 +199,7 @@ function getFilteredCamps(){
     if(curCampDate==='7d'&&md<s7Str)return false;
     else if(curCampDate==='30d'&&md<s30Str)return false;
     else if(curCampDate==='month'){var msel=document.getElementById('cmSel').value;if(msel&&rm!==msel)return false;}
-    else if(curCampDate==='prev'&&rm!=='2026-04')return false;
+    else if(curCampDate==='prev'){var psel=document.getElementById('cmSel').value;if(psel&&rm!==psel)return false;}
     if(curCampRange[0]&&md<curCampRange[0])return false;
     if(curCampRange[1]&&md>curCampRange[1])return false;
     if(curCampBrand==='brand'&&r['词类']!=='品牌词')return false;
@@ -287,6 +287,14 @@ function setCampFilter(f){
       var now=new Date('2026-06-08');
       var curMonth=('2026-'+String(now.getMonth()+1).padStart(2,'0'));
       document.getElementById('cmSel').value=curMonth;
+    } else if(f==='prev'){
+      // auto-select previous month of current month (default: 2026-05)
+      var now=new Date('2026-06-08');
+      var curMonth=('2026-'+String(now.getMonth()+1).padStart(2,'0'));
+      var y=parseInt(curMonth.substring(0,4)), m=parseInt(curMonth.substring(5,7));
+      m--; if(m<1){m=12;y--;}
+      var prevMonth=String(y)+'-'+String(m).padStart(2,'0');
+      document.getElementById('cmSel').value=prevMonth;
     }
     document.querySelectorAll('.cfbtn').forEach(function(b){b.classList.remove('active');});
     var el=document.getElementById(f==='all'?'cfAll':f==='7d'?'cf7':f==='30d'?'cf30':f==='month'?'cfMonth':'cfPrev');
