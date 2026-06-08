@@ -220,6 +220,7 @@ function updateTable(rows){
     +"<td>"+fmtRoi(r.roi)+"</td>"
     +"<td>"+(isNaN(r.rcost)||r.rcost===0?'—':fmtCur(r.rcost))+"</td></tr>";
   });
+  tbody.innerHTML=html;
 }
 
 function setFilter(f){
