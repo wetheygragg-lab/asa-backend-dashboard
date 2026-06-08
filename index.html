@@ -51,18 +51,21 @@ tr:hover td{background:#1c2333}
 .date-cell{color:#94a3b8!important;font-weight:500}
 .table-wrap{max-height:480px;overflow-y:auto;border-radius:8px}
 .footer{margin-top:20px;font-size:11px;color:#475569;text-align:center}
-</style>
-</head>
-<body>
-<div class="header">
-<div class="header-title"><span>ASA</span>v3 &middot; Grafana Style</div>
-<div class="header-sub">Range: 05-01 ~ 06-07 | Updated: 2026-06-08</div>
-</div>
-
-<div class="kpi-grid">
+.filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.fbtn{background:#1f2937;border:1px solid #374151;color:#94a3b8;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
+.fbtn:hover{border-color:#4f46e5;color:#fff}
+.fbtn.active{background:#4f46e5;border-color:#4f46e5;color:#fff}
+.month-sel{background:#1f2937;border:1px solid #374151;color:#94a3b8;padding:6px 10px;border-radius:8px;font-size:12px}
+.brand-sel{display:flex;gap:6px;margin-left:8px}
+.bbtn{background:#1f2937;border:1px solid #374151;color:#94a3b8;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px}
+.bbtn:hover{border-color:#00d084;color:#fff}
+.bbtn.active{background:#00d084;border-color:#00d084;color:#0a0e17;font-weight:600}
+.daterange{display:flex;gap:6px;align-items:center;margin-left:auto}
+.dr-input{background:#1f2937;border:1px solid #374151;color:#e2e8f0;padding:6px 10px;border-radius:8px;font-size:12px;width:110px}
+.dr-apply{background:#4f46e5;border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500}
+</style></head><body><div class="header"><div class="header-title"><span>ASA</span>v3 &middot; Grafana Style</div><div class="header-sub">Range: 05-01 ~ 06-07 | Updated: 2026-06-08</div></div><div class="filter-bar">  <button class="fbtn active" id="fbAll" onclick="setFilter('all')">全部</button>  <button class="fbtn" id="fb7" onclick="setFilter('7d')">近7天</button>  <button class="fbtn" id="fb30" onclick="setFilter('30d')">近30天</button>  <button class="fbtn" id="fbMonth" onclick="setFilter('month')">本月</button>  <button class="fbtn" id="fbPrev" onclick="setFilter('prev')">上月</button>  <select class="month-sel" id="mSel" onchange="setFilter('month')">    <option value="">全部月份</option>    <option value="2026-05">2026年5月</option>    <option value="2026-06">2026年6月</option>  </select>  <div class="brand-sel">    <button class="bbtn active" id="bbAll" onclick="setBrandFilter('all')">全部</button>    <button class="bbtn" id="bbBrand" onclick="setBrandFilter('brand')">品牌词</button>    <button class="bbtn" id="bbNb" onclick="setBrandFilter('nb')">非品牌词</button>  </div>  <div class="daterange">    <input type="date" class="dr-input" id="drStart" value="2026-05-01">    <span style="color:#64748b;font-size:12px">~</span>    <input type="date" class="dr-input" id="drEnd" value="2026-06-07">    <button class="dr-apply" onclick="applyDateRange()">筛选</button>  </div></div><div class="kpi-grid">
 <div class='kpi-card'><div class='kpi-label'>总支出</div><div class='kpi-val'>¥147,619.86</div></div><div class='kpi-card'><div class='kpi-label'>总注册</div><div class='kpi-val'>28,967</div></div><div class='kpi-card'><div class='kpi-label'>总充值</div><div class='kpi-val'>¥161,204.00</div></div><div class='kpi-card'><div class='kpi-label'>新客充值</div><div class='kpi-val'>¥85,820.00</div></div><div class='kpi-card'><div class='kpi-label'>注册成本</div><div class='kpi-val'>¥5.10</div></div><div class='kpi-card'><div class='kpi-label'>总ROI</div><div class='kpi-val'>1.0920</div></div><div class='kpi-card'><div class='kpi-label'>新客ROI</div><div class='kpi-val'>0.5814</div></div><div class='kpi-card'><div class='kpi-label'>激活率</div><div class='kpi-val'>132.22%</div></div>
 </div>
-
 <div class="charts-row">
 <div class="canvas-card">
 <h3>支出与充值趋势</h3>
@@ -131,6 +134,129 @@ tr:hover td{background:#1c2333}
 <script>
 new Chart(document.getElementById('cT'),{type:'line',data:{labels:[05-01,05-02,05-03,05-04,05-05,05-06,05-07,05-08,05-09,05-10,05-11,05-12,05-13,05-14,05-15,05-16,05-17,05-18,05-19,05-20,05-21,05-22,05-23,05-24,05-25,05-26,05-27,05-28,05-29,05-30,05-31,06-01,06-02,06-03,06-04,06-05,06-06,06-07],datasets:[{label:'支出',data:[903.0844,981.774,1091.8556,1227.2094,1547.6676,2533.7016,3815.3863,4272.0483,5562.6837,6696.4246,6344.629800000001,5242.404,4715.5922,11415.8204,7184.7255000000005,6504.758199999999,5361.9605,5739.097,7327.5596000000005,5483.7741000000005,5536.0503,6239.910400000001,5309.049300000001,4411.49,4233.6052,3530.04,3187.4819,2846.0741,2656.6018000000004,1745.2991,1957.2001999999998,2134.3423000000003,1863.2755,1803.0213,1834.5383000000002,1847.7758,1341.8627999999999,1190.0894],borderColor:'#4f46e5',backgroundColor:'rgba(79,70,229,0.1)',fill:true,tension:0.4,yAxisID:'y'},{label:'总充值',data:[1538.0,1441.0,471.0,856.0,2904.0,4246.0,5516.0,4007.0,3911.0,4343.0,5151.0,5269.0,5451.0,6917.0,4296.0,2985.0,4425.0,6334.0,8474.0,7770.0,6272.0,5600.0,3126.0,1807.0,6896.0,6267.0,4352.0,4446.0,4185.0,3183.0,1712.0,6233.0,3856.0,4699.0,4939.0,3657.0,2027.0,1642.0],borderColor:'#00d084',backgroundColor:'rgba(0,208,132,0.1)',fill:true,tension:0.4,yAxisID:'y1'},{label:'新客充值',data:[1222.0,729.0,442.0,600.0,1687.0,2481.0,3439.0,2458.0,2489.0,3119.0,2796.0,2663.0,2799.0,3596.0,2744.0,1874.0,2531.0,3236.0,4778.0,4217.0,3989.0,2142.0,2119.0,1220.0,3228.0,2451.0,1953.0,2599.0,2415.0,1545.0,941.0,3207.0,1571.0,1236.0,2134.0,1642.0,398.0,1130.0],borderColor:'#ffd93d',backgroundColor:'rgba(255,217,61,0.1)',fill:true,tension:0.4,yAxisID:'y1'}]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}},scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1f2937'}},y:{position:'left',ticks:{color:'#4f46e5',font:{size:10}},grid:{color:'#1f2937'}},y1:{position:'right',ticks:{color:'#00d084',font:{size:10}},grid:{drawOnChartArea:false}}}}});
 new Chart(document.getElementById('cR'),{type:'line',data:{labels:[05-01,05-02,05-03,05-04,05-05,05-06,05-07,05-08,05-09,05-10,05-11,05-12,05-13,05-14,05-15,05-16,05-17,05-18,05-19,05-20,05-21,05-22,05-23,05-24,05-25,05-26,05-27,05-28,05-29,05-30,05-31,06-01,06-02,06-03,06-04,06-05,06-06,06-07],datasets:[{label:'CTR%',data:[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],borderColor:'#f97316',backgroundColor:'rgba(249,115,22,0.1)',fill:true,tension:0.4,yAxisID:'y'},{label:'总ROI',data:[1.7031,1.4678,0.4314,0.6975,1.8764,1.6758,1.4457,0.938,0.7031,0.6486,0.8119,1.0051,1.156,0.6059,0.5979,0.4589,0.8253,1.1037,1.1565,1.4169,1.1329,0.8974,0.5888,0.4096,1.6289,1.7753,1.3653,1.5622,1.5753,1.8238,0.8747,2.9203,2.0695,2.6062,2.6922,1.9791,1.5106,1.3797],borderColor:'#00d084',backgroundColor:'rgba(0,208,132,0.1)',fill:true,tension:0.4,yAxisID:'y1'},{label:'新客ROI',data:[1.3531,0.7425,0.4048,0.4889,1.09,0.9792,0.9014,0.5754,0.4474,0.4658,0.4407,0.508,0.5936,0.315,0.3819,0.2881,0.472,0.5639,0.6521,0.769,0.7205,0.3433,0.3991,0.2766,0.7625,0.6943,0.6127,0.9132,0.9091,0.8852,0.4808,1.5026,0.8431,0.6855,1.1632,0.8886,0.2966,0.9495],borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,0.1)',fill:true,tension:0.4,yAxisID:'y1'}]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}},scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1f2937'}},y:{position:'left',ticks:{color:'#f97316',font:{size:10}},grid:{color:'#1f2937'}},y1:{position:'right',ticks:{color:'#00d084',font:{size:10}},grid:{drawOnChartArea:false}}}}});
+
+var cT=null,cR=null;
+var curFilter='all';
+var curBrand='all';
+var curRange=[null,null];
+
+function fmtPct(v){if(v==null||isNaN(v))return '—';return v.toFixed(2)+'%';}
+function fmtRoi(v){if(v==null||isNaN(v))return '—';return v.toFixed(4);}
+function fmtNum(v){if(v==null||isNaN(v))return '—';return v.toLocaleString('en-US',{maximumFractionDigits:0});}
+function fmtCur(v){if(v==null||isNaN(v))return '—';return '\u00a5'+v.toLocaleString('en-US',{maximumFractionDigits:2});}
+
+function getFiltered(){
+  var start=curRange[0]?new Date(curRange[0]):null;
+  var end=curRange[1]?new Date(curRange[1]+'T23:59:59'):null;
+  var now=new Date('2026-06-08');
+  var month6=['2026-05','2026-06'];
+  var prevMonth=['2026-04'];
+  return dailyData.filter(function(r){
+    var d=new Date('2026/'+r.d.replace(/-/g,'/'));
+    if(curFilter==='7d'){var s7=new Date(now);s7.setDate(s7.getDate()-7);if(d<s7)return false;}
+    else if(curFilter==='30d'){var s30=new Date(now);s30.setDate(s30.getDate()-30);if(d<s30)return false;}
+    else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&r.month!==msel)return false;}
+    else if(curFilter==='prev'&&!prevMonth.includes(r.month))return false;
+    if(start&&d<start)return false;
+    if(end&&d>end)return false;
+    return true;
+  });
+}
+
+function sumField(rows,f){return rows.reduce(function(s,r){return s+(r[f]||0);},0);}
+
+function updateKPIs(rows){
+  var spend=sumField(rows,'spend');
+  var reg=Math.round(sumField(rows,'reg'));
+  var act=Math.round(sumField(rows,'act'));
+  var inst=sumField(rows,'inst');
+  var clk=sumField(rows,'clk');
+  var newR=sumField(rows,'newR');
+  var rcost=spend/reg||0;
+  var roi=rows.length>0?rows.reduce(function(s,r){return s+(r.roi||0)*r.spend;},0)/spend||0:0;
+  var nroi=spend>0?newR/spend:0;
+  var actRate=inst>0?act/inst*100:0;
+  var vals=[
+    fmtCur(spend),fmtNum(reg),fmtCur(sumField(rows,'spend')/0+0),fmtCur(newR),
+    fmtCur(rcost),fmtRoi(roi),fmtRoi(nroi),fmtPct(actRate)
+  ];
+  var kpis=document.querySelectorAll('.kpi-val');
+  kpis.forEach(function(el,i){if(vals[i])el.textContent=vals[i];});
+}
+
+function updateCharts(rows){
+  var lb=rows.map(function(r){return r.d;});
+  var sp=rows.map(function(r){return r.spend;});
+  var nr=rows.map(function(r){return r.newR;});
+  var tr=rows.map(function(r){return r.spend>0?sumField([r],'spend')/0+0:0;});
+  var ctr=rows.map(function(r){return r.imp>0?r.clk/r.imp*100:0;});
+  var roiD=rows.map(function(r){return r.roi||0;});
+  var nroiD=rows.map(function(r){return r.newRoi||0;});
+
+  if(cT){cT.destroy();}
+  if(cR){cR.destroy();}
+  cT=new Chart(document.getElementById('cT'),{type:'line',data:{labels:lb,datasets:[{label:'\u652f\u51fa',data:sp,borderColor:'#4f46e5',backgroundColor:'rgba(79,70,229,0.1)',fill:true,tension:0.4,yAxisID:'y'},{label:'\u603b\u5145\u503c',data:nr,borderColor:'#00d084',backgroundColor:'rgba(0,208,132,0.1)',fill:true,tension:0.4,yAxisID:'y1'}]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}},scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1f2937'}},y:{position:'left',ticks:{color:'#4f46e5',font:{size:10}},grid:{color:'#1f2937'}},y1:{position:'right',ticks:{color:'#00d084',font:{size:10}},grid:{drawOnChartArea:false}}}}});
+  cR=new Chart(document.getElementById('cR'),{type:'line',data:{labels:lb,datasets:[{label:'CTR%',data:ctr,borderColor:'#f97316',backgroundColor:'rgba(249,115,22,0.1)',fill:true,tension:0.4,yAxisID:'y'},{label:'\u603bROI',data:roiD,borderColor:'#00d084',backgroundColor:'rgba(0,208,132,0.1)',fill:true,tension:0.4,yAxisID:'y1'},{label:'\u65b0\u5ba2ROI',data:nroiD,borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,0.1)',fill:true,tension:0.4,yAxisID:'y1'}]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}},scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1f2937'}},y:{position:'left',ticks:{color:'#f97316',font:{size:10}},grid:{color:'#1f2937'}},y1:{position:'right',ticks:{color:'#00d084',font:{size:10}},grid:{drawOnChartArea:false}}}}});
+}
+
+function updateTable(rows){
+  var tbody=document.querySelector('.daily-section table tbody');
+  if(!tbody)return;
+  var html='';
+  rows.forEach(function(r){
+    html+="<tr><td class='date-cell'>"+r.d+"</td>"
+    +"<td>"+fmtCur(r.spend)+"</td>"
+    +"<td>"+fmtNum(r.imp)+"</td>"
+    +"<td>"+fmtNum(r.clk)+"</td>"
+    +"<td>"+fmtNum(r.inst)+"</td>"
+    +"<td>"+fmtNum(r.act)+"</td>"
+    +"<td>"+fmtNum(r.reg)+"</td>"
+    +"<td>"+fmtCur(r.newR)+"</td>"
+    +"<td>"+fmtPct(r.newRpct)+"</td>"
+    +"<td>"+fmtRoi(r.newRoi)+"</td>"
+    +"<td>"+fmtRoi(r.roi)+"</td>"
+    +"<td>"+(isNaN(r.rcost)||r.rcost===0?'—':fmtCur(r.rcost))+"</td></tr>";
+  });
+  tbody.innerHTML=html;
+}
+
+function setFilter(f){
+  curFilter=f;
+  document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('active');});
+  var el=document.getElementById(f==='all'?'fbAll':f==='7d'?'fb7':f==='30d'?'fb30':f==='month'?'fbMonth':'fbPrev');
+  if(el)el.classList.add('active');
+  var rows=getFiltered();
+  updateKPIs(rows);
+  updateCharts(rows);
+  updateTable(rows);
+}
+
+function setBrandFilter(b){
+  curBrand=b;
+  document.querySelectorAll('.bbtn').forEach(function(x){x.classList.remove('active');});
+  var el=document.getElementById(b==='all'?'bbAll':b==='brand'?'bbBrand':'bbNb');
+  if(el)el.classList.add('active');
+}
+
+function applyDateRange(){
+  var s=document.getElementById('drStart').value;
+  var e=document.getElementById('drEnd').value;
+  curRange=[s,e];
+  document.querySelectorAll('.fbtn').forEach(function(x){x.classList.remove('active');});
+  var rows=getFiltered();
+  updateKPIs(rows);
+  updateCharts(rows);
+  updateTable(rows);
+}
+
+// init
+window.addEventListener('load',function(){
+  dailyData=JSON.parse('[{d:\'05-01\',spend:903.0844,imp:8265.0,clk:342.0,inst:419.0,act:546.0,reg:255.0,newR:1222.0,newRpct:479.22,newRoi:1.3531,roi:1.7031,rcost:10.06,month:\'2026-05\',dom:1},{d:\'05-02\',spend:981.774,imp:5396.0,clk:303.0,inst:378.0,act:757.0,reg:233.0,newR:729.0,newRpct:312.88,newRoi:0.7425,roi:1.4678,rcost:nan,month:\'2026-05\',dom:2},{d:\'05-03\',spend:1091.8556,imp:3972.0,clk:284.0,inst:406.0,act:755.0,reg:252.0,newR:442.0,newRpct:175.4,newRoi:0.4048,roi:0.4314,rcost:nan,month:\'2026-05\',dom:3},{d:\'05-04\',spend:1227.2094,imp:5587.0,clk:355.0,inst:484.0,act:949.0,reg:317.0,newR:600.0,newRpct:189.27,newRoi:0.4889,roi:0.6975,rcost:nan,month:\'2026-05\',dom:4},{d:\'05-05\',spend:1547.6676,imp:4731.0,clk:513.0,inst:1102.0,act:1371.0,reg:505.0,newR:1687.0,newRpct:334.06,newRoi:1.09,roi:1.8764,rcost:nan,month:\'2026-05\',dom:5},{d:\'05-06\',spend:2533.7016,imp:17789.0,clk:822.0,inst:1351.0,act:1508.0,reg:847.0,newR:2481.0,newRpct:292.92,newRoi:0.9792,roi:1.6758,rcost:nan,month:\'2026-05\',dom:6},{d:\'05-07\',spend:3815.3863,imp:26380.0,clk:1227.0,inst:1633.0,act:1870.0,reg:1103.0,newR:3439.0,newRpct:311.79,newRoi:0.9014,roi:1.4457,rcost:nan,month:\'2026-05\',dom:7},{d:\'05-08\',spend:4272.0483,imp:32579.0,clk:1345.0,inst:1602.0,act:2798.0,reg:1089.0,newR:2458.0,newRpct:225.71,newRoi:0.5754,roi:0.938,rcost:nan,month:\'2026-05\',dom:8},{d:\'05-09\',spend:5562.6837,imp:41161.0,clk:1531.0,inst:1581.0,act:2624.0,reg:1087.0,newR:2489.0,newRpct:228.98,newRoi:0.4474,roi:0.7031,rcost:nan,month:\'2026-05\',dom:9},{d:\'05-10\',spend:6696.4246,imp:55122.0,clk:1953.0,inst:2420.0,act:2338.0,reg:1058.0,newR:3119.0,newRpct:294.8,newRoi:0.4658,roi:0.6486,rcost:nan,month:\'2026-05\',dom:10},{d:\'05-11\',spend:6344.629800000001,imp:56982.0,clk:1951.0,inst:1765.0,act:2431.0,reg:1100.0,newR:2796.0,newRpct:254.18,newRoi:0.4407,roi:0.8119,rcost:3.7,month:\'2026-05\',dom:11},{d:\'05-12\',spend:5242.404,imp:43993.0,clk:1674.0,inst:1655.0,act:2071.0,reg:1081.0,newR:2663.0,newRpct:246.35,newRoi:0.508,roi:1.0051,rcost:5.2,month:\'2026-05\',dom:12},{d:\'05-13\',spend:4715.5922,imp:39889.0,clk:1444.0,inst:1381.0,act:1918.0,reg:968.0,newR:2799.0,newRpct:289.15,newRoi:0.5936,roi:1.156,rcost:nan,month:\'2026-05\',dom:13},{d:\'05-14\',spend:11415.8204,imp:116463.0,clk:3287.0,inst:1984.0,act:2167.0,reg:1194.0,newR:3596.0,newRpct:301.17,newRoi:0.315,roi:0.6059,rcost:nan,month:\'2026-05\',dom:14},{d:\'05-15\',spend:7184.7255000000005,imp:67225.0,clk:2325.0,inst:1792.0,act:2075.0,reg:1157.0,newR:2744.0,newRpct:237.17,newRoi:0.3819,roi:0.5979,rcost:nan,month:\'2026-05\',dom:15},{d:\'05-16\',spend:6504.758199999999,imp:72398.0,clk:2253.0,inst:1235.0,act:1332.0,reg:691.0,newR:1874.0,newRpct:271.2,newRoi:0.2881,roi:0.4589,rcost:nan,month:\'2026-05\',dom:16},{d:\'05-17\',spend:5361.9605,imp:44508.0,clk:1656.0,inst:1164.0,act:1296.0,reg:664.0,newR:2531.0,newRpct:381.17,newRoi:0.472,roi:0.8253,rcost:nan,month:\'2026-05\',dom:17},{d:\'05-18\',spend:5739.097,imp:43241.0,clk:1512.0,inst:1320.0,act:1925.0,reg:1010.0,newR:3236.0,newRpct:320.4,newRoi:0.5639,roi:1.1037,rcost:nan,month:\'2026-05\',dom:18},{d:\'05-19\',spend:7327.5596000000005,imp:84221.0,clk:2521.0,inst:1649.0,act:2019.0,reg:1071.0,newR:4778.0,newRpct:446.13,newRoi:0.6521,roi:1.1565,rcost:nan,month:\'2026-05\',dom:19},{d:\'05-20\',spend:5483.7741000000005,imp:32871.0,clk:1476.0,inst:1284.0,act:1885.0,reg:1007.0,newR:4217.0,newRpct:418.77,newRoi:0.769,roi:1.4169,rcost:nan,month:\'2026-05\',dom:20},{d:\'05-21\',spend:5536.0503,imp:28658.0,clk:1322.0,inst:1291.0,act:1854.0,reg:987.0,newR:3989.0,newRpct:404.15,newRoi:0.7205,roi:1.1329,rcost:nan,month:\'2026-05\',dom:21},{d:\'05-22\',spend:6239.910400000001,imp:48984.0,clk:1858.0,inst:1216.0,act:1679.0,reg:841.0,newR:2142.0,newRpct:254.7,newRoi:0.3433,roi:0.8974,rcost:18.08,month:\'2026-05\',dom:22},{d:\'05-23\',spend:5309.049300000001,imp:52892.0,clk:1733.0,inst:867.0,act:1070.0,reg:540.0,newR:2119.0,newRpct:392.41,newRoi:0.3991,roi:0.5888,rcost:24.1,month:\'2026-05\',dom:23},{d:\'05-24\',spend:4411.49,imp:34039.0,clk:1310.0,inst:866.0,act:983.0,reg:524.0,newR:1220.0,newRpct:232.82,newRoi:0.2766,roi:0.4096,rcost:25.61,month:\'2026-05\',dom:24},{d:\'05-25\',spend:4233.6052,imp:17422.0,clk:1051.0,inst:1130.0,act:1648.0,reg:839.0,newR:3228.0,newRpct:384.74,newRoi:0.7625,roi:1.6289,rcost:10.84,month:\'2026-05\',dom:25},{d:\'05-26\',spend:3530.04,imp:12700.0,clk:885.0,inst:1102.0,act:1598.0,reg:847.0,newR:2451.0,newRpct:289.37,newRoi:0.6943,roi:1.7753,rcost:7.71,month:\'2026-05\',dom:26},{d:\'05-27\',spend:3187.4819,imp:10216.0,clk:835.0,inst:1155.0,act:1630.0,reg:863.0,newR:1953.0,newRpct:226.3,newRoi:0.6127,roi:1.3653,rcost:7.17,month:\'2026-05\',dom:27},{d:\'05-28\',spend:2846.0741,imp:9454.0,clk:778.0,inst:1061.0,act:1594.0,reg:796.0,newR:2599.0,newRpct:326.51,newRoi:0.9132,roi:1.5622,rcost:nan,month:\'2026-05\',dom:28},{d:\'05-29\',spend:2656.6018000000004,imp:10419.0,clk:822.0,inst:1308.0,act:1621.0,reg:861.0,newR:2415.0,newRpct:280.49,newRoi:0.9091,roi:1.5753,rcost:nan,month:\'2026-05\',dom:29},{d:\'05-30\',spend:1745.2991,imp:8641.0,clk:579.0,inst:730.0,act:928.0,reg:483.0,newR:1545.0,newRpct:319.88,newRoi:0.8852,roi:1.8238,rcost:nan,month:\'2026-05\',dom:30},{d:\'05-31\',spend:1957.2001999999998,imp:8839.0,clk:580.0,inst:756.0,act:906.0,reg:482.0,newR:941.0,newRpct:195.23,newRoi:0.4808,roi:0.8747,rcost:7.78,month:\'2026-05\',dom:31},{d:\'06-01\',spend:2134.3423000000003,imp:10158.0,clk:723.0,inst:1068.0,act:1444.0,reg:732.0,newR:3207.0,newRpct:438.11,newRoi:1.5026,roi:2.9203,rcost:6.58,month:\'2026-06\',dom:1},{d:\'06-02\',spend:1863.2755,imp:7814.0,clk:646.0,inst:1120.0,act:1563.0,reg:813.0,newR:1571.0,newRpct:193.23,newRoi:0.8431,roi:2.0695,rcost:4.33,month:\'2026-06\',dom:2},{d:\'06-03\',spend:1803.0213,imp:9974.0,clk:553.0,inst:698.0,act:1112.0,reg:494.0,newR:1236.0,newRpct:250.2,newRoi:0.6855,roi:2.6062,rcost:nan,month:\'2026-06\',dom:3},{d:\'06-04\',spend:1834.5383000000002,imp:8180.0,clk:578.0,inst:838.0,act:1209.0,reg:626.0,newR:2134.0,newRpct:340.89,newRoi:1.1632,roi:2.6922,rcost:5.87,month:\'2026-06\',dom:4},{d:\'06-05\',spend:1847.7758,imp:10880.0,clk:691.0,inst:910.0,act:1236.0,reg:663.0,newR:1642.0,newRpct:247.66,newRoi:0.8886,roi:1.9791,rcost:8.56,month:\'2026-06\',dom:5},{d:\'06-06\',spend:1341.8627999999999,imp:10384.0,clk:571.0,inst:670.0,act:827.0,reg:450.0,newR:398.0,newRpct:88.44,newRoi:0.2966,roi:1.5106,rcost:6.96,month:\'2026-06\',dom:6},{d:\'06-07\',spend:1190.0894,imp:6975.0,clk:487.0,inst:726.0,act:795.0,reg:437.0,newR:1130.0,newRpct:258.58,newRoi:0.9495,roi:1.3797,rcost:8.34,month:\'2026-06\',dom:7}]');
+  var rows=getFiltered();
+  updateKPIs(rows);
+  updateCharts(rows);
+  updateTable(rows);
+});
 </script>
 </body>
 </html>
