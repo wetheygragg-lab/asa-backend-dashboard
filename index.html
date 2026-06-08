@@ -153,7 +153,7 @@ function getFiltered(){
   var prevMonth=['2026-04'];
   return dailyData.filter(function(r){
     var parts=r.d.split('-');
-    var yr='202'+parts[0];var d=new Date(parseInt(yr),parseInt(parts[1])-1,parseInt(parts[2]));
+    var d=new Date(2026,parseInt(parts[1])-1,parseInt(parts[2]));
     if(curFilter==='7d'){var s7=new Date(now);s7.setDate(s7.getDate()-7);if(d<s7)return false;}
     else if(curFilter==='30d'){var s30=new Date(now);s30.setDate(s30.getDate()-30);if(d<s30)return false;}
     else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&r.month!==msel)return false;}
