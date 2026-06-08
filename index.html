@@ -315,10 +315,26 @@ function renderBrandStats(rows){
   function sr(id,v){sv(id,v,function(x){return x.toFixed(4);});}
   function spct(id,v){sv(id,v,function(x){return x.toFixed(2)+'%';});}
 
-  var bro=rows.filter(function(r){return r.brand===1;});
-  var nbro=rows.filter(function(r){return r.brand===0;});
-  var bs=sumField(bro,'spend'),br=Math.round(sumField(bro,'reg')),ba=Math.round(sumField(bro,'act')),bnr=sumField(bro,'newR'),btr=sumField(bro,'newRpct');
-  var nbs=sumField(nbro,'spend'),nbr=Math.round(sumField(nbro,'reg')),nba=Math.round(sumField(nbro,'act')),nbnr=sumField(nbro,'newR'),nbtr=sumField(nbro,'newRpct');
+  // Get filtered campData using the same date logic as getFilteredCamps (but no brand filter)
+  var now=new Date('2026-06-08');
+  var s7=new Date(now);s7.setDate(s7.getDate()-7);
+  var s30=new Date(now);s30.setDate(s30.getDate()-30);
+  var s7Str='2026-'+String(s7.getMonth()+1).padStart(2,'0')+'-'+String(s7.getDate()).padStart(2,'0');
+  var s30Str='2026-'+String(s30.getMonth()+1).padStart(2,'0')+'-'+String(s30.getDate()).padStart(2,'0');
+  var filteredCamp=campData.filter(function(r){
+    var md=r.date_norm;
+    if(curFilter==='7d'&&md<s7Str)return false;
+    else if(curFilter==='30d'&&md<s30Str)return false;
+    else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&md.substring(0,7)!==msel)return false;}
+    else if(curFilter==='prev'&&md.substring(0,7)!=='2026-04')return false;
+    if(curRange[0]&&md<curRange[0])return false;
+    if(curRange[1]&&md>curRange[1])return false;
+    return true;
+  });
+  var bro=filteredCamp.filter(function(r){return r['词类']==='品牌词';});
+  var nbro=filteredCamp.filter(function(r){return r['词类']==='非品牌词';});
+  var bs=sumField(bro,'支出'),br=Math.round(sumField(bro,'注册人数')),ba=Math.round(sumField(bro,'激活数')),bnr=sumField(bro,'新客充值'),btr=sumField(bro,'新客充值率');
+  var nbs=sumField(nbro,'支出'),nbr=Math.round(sumField(nbro,'注册人数')),nba=Math.round(sumField(nbro,'激活数')),nbnr=sumField(nbro,'新客充值'),nbtr=sumField(nbro,'新客充值率');
 
   sc('b_spend',bs);si('b_reg',br);sc('b_newR',bnr);
   sr('b_roi',bs>0?btr/bs:null);sr('b_nroi',bs>0?bnr/bs:null);
