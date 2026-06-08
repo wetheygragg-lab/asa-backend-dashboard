@@ -334,12 +334,53 @@ function getFiltered(){
   var s7Str='2026-'+String(s7.getMonth()+1).padStart(2,'0')+'-'+String(s7.getDate()).padStart(2,'0');
   var s30=new Date(now);s30.setDate(s30.getDate()-30);
   var s30Str='2026-'+String(s30.getMonth()+1).padStart(2,'0')+'-'+String(s30.getDate()).padStart(2,'0');
+
+  // When brand filter is active, aggregate from campData (dailyData has no brand info)
+  if(curBrand!=='all'){
+    var brandKey=curBrand==='brand'?'品牌词':'非品牌词';
+    var filtered=campData.filter(function(r){
+      if(r['词类']!==brandKey)return false;
+      var md=r.date_norm||'';
+      if(curFilter==='7d'&&md<s7Str)return false;
+      else if(curFilter==='30d'&&md<s30Str)return false;
+      else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&r.month!==msel)return false;}
+      else if(curFilter==='prev'){var psel=document.getElementById('mSel').value;if(psel&&r.month!==psel)return false;}
+      if(start&&md<start)return false;
+      if(end&&md>end)return false;
+      return true;
+    });
+    // Aggregate by date
+    var byDate={};
+    filtered.forEach(function(r){
+      var d=r.date_norm||'';
+      if(!byDate[d])byDate[d]={d:d,month:r.month||'',spend:0,imp:0,clk:0,inst:0,act:0,reg:0,newR:0,newRpct:0,newRoi:0,roi:0,totalR:0};
+      byDate[d].spend+=r['支出']||0;
+      byDate[d].imp+=r['展示']||0;
+      byDate[d].clk+=r['点击']||0;
+      byDate[d].inst+=r['安装']||0;
+      byDate[d].act+=r['激活数']||0;
+      byDate[d].reg+=r['注册人数']||0;
+      byDate[d].newR+=r['新客充值']||0;
+      byDate[d].totalR+=r['总充值']||0;
+    });
+    var result=Object.keys(byDate).sort().map(function(d){
+      var r=byDate[d];
+      r.newRpct=r.reg>0?r.newR/r.reg*100:0;
+      r.newRoi=r.spend>0?r.newR/r.spend:0;
+      r.roi=r.spend>0?r.totalR/r.spend:0;
+      r.rcost=r.reg>0?r.spend/r.reg:0;
+      return r;
+    });
+    return result;
+  }
+
+  // curBrand='all': use pre-aggregated dailyData
   return dailyData.filter(function(r){
     var md='2026-'+r.d;
     if(curFilter==='7d'&&md<s7Str)return false;
     else if(curFilter==='30d'&&md<s30Str)return false;
     else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&r.month!==msel)return false;}
-    else if(curFilter==='prev'&&r.month!=='2026-04')return false;
+    else if(curFilter==='prev'){var psel=document.getElementById('mSel').value;if(psel&&rm!==psel)return false;}
     if(start&&md<start)return false;
     if(end&&md>end)return false;
     return true;
@@ -392,7 +433,7 @@ function renderBrandStats(rows){
     if(curFilter==='7d'&&md<s7Str)return false;
     else if(curFilter==='30d'&&md<s30Str)return false;
     else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&rm!==msel)return false;}
-    else if(curFilter==='prev'&&rm!=='2026-04')return false;
+    else if(curFilter==='prev'){var psel=document.getElementById('mSel').value;if(psel&&rm!==psel)return false;}
     if(curRange[0]&&md<curRange[0])return false;
     if(curRange[1]&&md>curRange[1])return false;
     return true;
@@ -413,6 +454,11 @@ function renderBrandStats(rows){
   sc('nb_spend',nbs);si('nb_reg',nbr);sc('nb_newR',nbnr);
   sr('nb_roi',nbTotalRoi);sr('nb_nroi',nbnewRoi);
   sc('nb_rcost',nbr>0?nbs/nbr:null);si('nb_act',nba);spct('nb_nr',nbRechRate);
+  // When brand filter is active, dim the non-selected card
+  var brandCard=document.querySelector('.brand-card:not(.nb)');
+  var nbCard=document.querySelector('.brand-card.nb');
+  if(brandCard)brandCard.style.opacity=curBrand==='nb'?'0.3':'1';
+  if(nbCard)nbCard.style.opacity=curBrand==='brand'?'0.3':'1';
 }
 
 function updateCharts(rows){
@@ -468,6 +514,12 @@ function setBrandFilter(b){
   document.querySelectorAll('.bbtn').forEach(function(x){x.classList.remove('active');});
   var el=document.getElementById(b==='all'?'bbAll':b==='brand'?'bbBrand':'bbNb');
   if(el)el.classList.add('active');
+  // Re-render all sections with brand filter applied
+  var rows=getFiltered();
+  updateKPIs(rows);
+  updateCharts(rows);
+  updateTable(rows);
+  renderBrandStats(rows);
 }
 
 function applyDateRange(){
