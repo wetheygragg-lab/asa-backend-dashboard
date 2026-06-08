@@ -88,7 +88,7 @@ tr:hover td{background:#1c2333}
 </div>
 
 <div class="brand-section">
-<div class='brand-card'><h4>品牌词</h4><div class='brow'><span class='blabel'>支出</span><span class='bval g'>¥46,763.24</span></div><div class='brow'><span class='blabel'>注册人数</span><span class='bval'>24,014</span></div><div class='brow'><span class='blabel'>注册成本</span><span class='bval y'>¥1.95</span></div><div class='brow'><span class='blabel'>总ROI</span><span class='bval g'>2.9961</span></div><div class='brow'><span class='blabel'>新客ROI</span><span class='bval g'>1.5622</span></div><div class='brow'><span class='blabel'>激活</span><span class='bval'>48,190</span></div><div class='brow'><span class='blabel'>新客充值率</span><span class='bval'>304.21%</span></div><div class='brow'><span class='blabel'>新客充值</span><span class='bval y'>¥73,054.00</span></div></div><div class='brand-card nb'><h4>非品牌词</h4><div class='brow'><span class='blabel'>支出</span><span class='bval g'>¥100,856.63</span></div><div class='brow'><span class='blabel'>注册人数</span><span class='bval'>4,953</span></div><div class='brow'><span class='blabel'>注册成本</span><span class='bval y'>¥20.36</span></div><div class='brow'><span class='blabel'>总ROI</span><span class='bval g'>0.2092</span></div><div class='brow'><span class='blabel'>新客ROI</span><span class='bval g'>0.1266</span></div><div class='brow'><span class='blabel'>激活</span><span class='bval'>10,142</span></div><div class='brow'><span class='blabel'>新客充值率</span><span class='bval'>257.74%</span></div><div class='brow'><span class='blabel'>新客充值</span><span class='bval y'>¥12,766.00</span></div></div>
+<div class='brand-card'><h4>品牌词</h4><div class='brow'><span class='blabel'>支出</span><span class='bval g' id='b_spend'>¥46,763.24</span></div><div class='brow'><span class='blabel'>注册人数</span><span class='bval' id='b_reg'>24014</span></div><div class='brow'><span class='blabel'>注册成本</span><span class='bval y' id='b_rcost'>¥1.95</span></div><div class='brow'><span class='blabel'>总ROI</span><span class='bval g' id='b_roi'>2.9961</span></div><div class='brow'><span class='blabel'>新客ROI</span><span class='bval g' id='b_nroi'>1.5622</span></div><div class='brow'><span class='blabel'>激活</span><span class='bval' id='b_act'>48190</span></div><div class='brow'><span class='blabel'>新客充值率</span><span class='bval' id='b_nr'>304.21%</span></div><div class='brow'><span class='blabel'>新客充值</span><span class='bval y' id='b_newR'>¥73,054.00</span></div></div><div class='brand-card nb'><h4>非品牌词</h4><div class='brow'><span class='blabel'>支出</span><span class='bval g' id='nb_spend'>¥100,856.63</span></div><div class='brow'><span class='blabel'>注册人数</span><span class='bval' id='nb_reg'>4953</span></div><div class='brow'><span class='blabel'>注册成本</span><span class='bval y' id='nb_rcost'>¥20.36</span></div><div class='brow'><span class='blabel'>总ROI</span><span class='bval g' id='nb_roi'>0.2092</span></div><div class='brow'><span class='blabel'>新客ROI</span><span class='bval g' id='nb_nroi'>0.1266</span></div><div class='brow'><span class='blabel'>激活</span><span class='bval' id='nb_act'>10142</span></div><div class='brow'><span class='blabel'>新客充值率</span><span class='bval' id='nb_nr'>257.74%</span></div><div class='brow'><span class='blabel'>新客充值</span><span class='bval y' id='nb_newR'>¥12,766.00</span></div></div>
 </div>
 
 <div class="funnel-card">
@@ -302,6 +302,32 @@ function updateKPIs(rows){
   kpis.forEach(function(el,i){if(vals[i])el.textContent=vals[i];});
 }
 
+function renderBrandStats(rows){
+  function sumField(arr,f){return arr.reduce(function(s,r){return s+(r[f]||0);},0);}
+  function sv(id,val,fmt){
+    var el=document.getElementById(id);
+    if(!el)return;
+    if(val==null||isNaN(val)){el.textContent='—';return;}
+    el.textContent=fmt(val);
+  }
+  function si(id,v){sv(id,v,function(x){return Math.round(x).toLocaleString('en-US');});}
+  function sc(id,v){sv(id,v,function(x){return '¥'+x.toLocaleString('en-US',{maximumFractionDigits:2});});}
+  function sr(id,v){sv(id,v,function(x){return x.toFixed(4);});}
+  function spct(id,v){sv(id,v,function(x){return x.toFixed(2)+'%';});}
+
+  var bro=rows.filter(function(r){return r.brand===1;});
+  var nbro=rows.filter(function(r){return r.brand===0;});
+  var bs=sumField(bro,'spend'),br=Math.round(sumField(bro,'reg')),ba=Math.round(sumField(bro,'act')),bnr=sumField(bro,'newR'),btr=sumField(bro,'newRpct');
+  var nbs=sumField(nbro,'spend'),nbr=Math.round(sumField(nbro,'reg')),nba=Math.round(sumField(nbro,'act')),nbnr=sumField(nbro,'newR'),nbtr=sumField(nbro,'newRpct');
+
+  sc('b_spend',bs);si('b_reg',br);sc('b_newR',bnr);
+  sr('b_roi',bs>0?btr/bs:null);sr('b_nroi',bs>0?bnr/bs:null);
+  sc('b_rcost',br>0?bs/br:null);si('b_act',ba);spct('b_nr',btr);
+  sc('nb_spend',nbs);si('nb_reg',nbr);sc('nb_newR',nbnr);
+  sr('nb_roi',nbs>0?nbtr/nbs:null);sr('nb_nroi',nbs>0?nbnr/nbs:null);
+  sc('nb_rcost',nbr>0?nbs/nbr:null);si('nb_act',nba);spct('nb_nr',nbtr);
+}
+
 function updateCharts(rows){
   var lb=rows.map(function(r){return r.d;});
   var sp=rows.map(function(r){return r.spend;});
@@ -347,6 +373,7 @@ function setFilter(f){
   updateKPIs(rows);
   updateCharts(rows);
   updateTable(rows);
+  renderBrandStats(rows);
 }
 
 function setBrandFilter(b){
@@ -365,6 +392,7 @@ function applyDateRange(){
   updateKPIs(rows);
   updateCharts(rows);
   updateTable(rows);
+  renderBrandStats(rows);
 }
 
 /* ── 预加载 dailyData（load 事件前即可用）───────────────────── */
@@ -377,6 +405,7 @@ window.addEventListener('load',function(){
   updateKPIs(rows);
   updateCharts(rows);
   updateTable(rows);
+  renderBrandStats(rows);
   updateCampTable(getFilteredCamps());
 });
 
