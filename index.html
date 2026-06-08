@@ -282,6 +282,12 @@ function setCampFilter(f){
   // 'brand','nb' → brand filter
   if(['all','7d','30d','month','prev'].indexOf(f)>-1){
     curCampDate=f;
+    if(f==='month'){
+      // auto-select current month in dropdown
+      var now=new Date('2026-06-08');
+      var curMonth=('2026-'+String(now.getMonth()+1).padStart(2,'0'));
+      document.getElementById('cmSel').value=curMonth;
+    }
     document.querySelectorAll('.cfbtn').forEach(function(b){b.classList.remove('active');});
     var el=document.getElementById(f==='all'?'cfAll':f==='7d'?'cf7':f==='30d'?'cf30':f==='month'?'cfMonth':'cfPrev');
     if(el)el.classList.add('active');
