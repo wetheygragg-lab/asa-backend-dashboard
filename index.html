@@ -196,8 +196,8 @@ function getFilteredCamps(){
     else if(curCampDate==='30d'&&md<s30Str)return false;
     else if(curCampDate==='month'){var msel=document.getElementById('cmSel').value;if(msel&&md.substring(0,7)!==msel)return false;}
     else if(curCampDate==='prev'&&md.substring(0,7)!=='2026-04')return false;
-    if(curCampRange[0]&&md<curCampRange[0])return false;
-    if(curCampRange[1]&&md>curCampRange[1])return false;
+    if(curCampRange[0]&&md.slice(-5)<curCampRange[0].slice(-5))return false;
+    if(curCampRange[1]&&md.slice(-5)>curCampRange[1].slice(-5))return false;
     if(curCampBrand==='brand'&&r['词类']!=='品牌词')return false;
     if(curCampBrand==='nb'&&r['词类']!=='非品牌词')return false;
     return true;
@@ -333,8 +333,8 @@ function renderBrandStats(rows){
     else if(curFilter==='30d'&&md<s30Str)return false;
     else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&md.substring(0,7)!==msel)return false;}
     else if(curFilter==='prev'&&md.substring(0,7)!=='2026-04')return false;
-    if(curRange[0]&&md<curRange[0])return false;
-    if(curRange[1]&&md>curRange[1])return false;
+    if(curRange[0]&&md.slice(-5)<curRange[0].slice(-5))return false;
+    if(curRange[1]&&md.slice(-5)>curRange[1].slice(-5))return false;
     return true;
   });
   var bro=filteredCamp.filter(function(r){return r['词类']==='品牌词';});
