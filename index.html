@@ -502,6 +502,18 @@ function setFilter(f){
   document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('active');});
   var el=document.getElementById(f==='all'?'fbAll':f==='7d'?'fb7':f==='30d'?'fb30':f==='month'?'fbMonth':'fbPrev');
   if(el)el.classList.add('active');
+  if(f==='month'){
+    var now=new Date('2026-06-08');
+    var curMonth='2026-'+String(now.getMonth()+1).padStart(2,'0');
+    document.getElementById('mSel').value=curMonth;
+  } else if(f==='prev'){
+    var now=new Date('2026-06-08');
+    var curMonth='2026-'+String(now.getMonth()+1).padStart(2,'0');
+    var y=parseInt(curMonth.substring(0,4)), m=parseInt(curMonth.substring(5,7));
+    m--; if(m<1){m=12;y--;}
+    var prevMonth=String(y)+'-'+String(m).padStart(2,'0');
+    document.getElementById('mSel').value=prevMonth;
+  }
   var rows=getFiltered();
   updateKPIs(rows);
   updateCharts(rows);
