@@ -213,41 +213,45 @@ function updateCampTable(rows){
   if(!tbody)return;
   // Filter out campaigns where all key metrics are 0
   var visible = rows.filter(function(r){
-    return (r['支出']||0) > 0 || (r['展示']||0) > 0 || (r['点击']||0) > 0 ||
-           (r['安装']||0) > 0 || (r['激活数']||0) > 0 || (r['注册人数']||0) > 0;
+    return (r['支出']||0) > 0 || (r['imp']||0) > 0 || (r['clk']||0) > 0 ||
+           (r['inst']||0) > 0 || (r['act']||0) > 0 || (r['reg']||0) > 0;
   }).slice(0, 200);
   var html='';
   visible.forEach(function(r){
+    var spend=r['支出']||0, reg=r['reg']||0;
+    var totalR=r['总充值金额']||0, newR=r['新客充值金额']||0;
+    var roiVal=spend>0?totalR/spend:0;
+    var newRoiVal=spend>0?newR/spend:0;
     html+="<tr class='"+(r['词类']==='品牌词'?'brand-row':'nb-row')+"'>"
     +"<td class='date-cell'>"+(r['日期']||'')+"</td>"
     +"<td>"+(r['广告系列名称']||'')+"</td>"
     +"<td>"+(r['词类']||'')+"</td>"
-    +"<td>"+fmtCur(r['支出']||0)+"</td>"
-    +"<td>"+fmtNum(r['展示']||0)+"</td>"
-    +"<td>"+fmtNum(r['点击']||0)+"</td>"
-    +"<td>"+fmtNum(r['安装']||0)+"</td>"
-    +"<td>"+fmtNum(r['激活数']||0)+"</td>"
-    +"<td>"+fmtNum(r['注册人数']||0)+"</td>"
-    +"<td>"+fmtPct(r['CTR']||0)+"</td>"
-    +"<td>"+fmtPct(r['安装率']||0)+"</td>"
-    +"<td>"+fmtPct(r['激活率']||0)+"</td>"
-    +"<td>"+fmtPct(r['注册率']||0)+"</td>"
-    +"<td>"+fmtRoi(r['总充值ROI']||0)+"</td>"
-    +"<td>"+fmtRoi(r['新客ROI']||0)+"</td>"
-    +"<td>"+fmtPct(r['新客充值率']||0)+"</td>"
-    +"<td>"+((r['注册成本']==null||r['注册成本']===0)?'—':fmtCur(r['注册成本']))+"</td>"
+    +"<td>"+fmtCur(spend)+"</td>"
+    +"<td>"+fmtNum(r['imp']||0)+"</td>"
+    +"<td>"+fmtNum(r['clk']||0)+"</td>"
+    +"<td>"+fmtNum(r['inst']||0)+"</td>"
+    +"<td>"+fmtNum(r['act']||0)+"</td>"
+    +"<td>"+fmtNum(reg)+"</td>"
+    +"<td>"+fmtPct(r['ctr']||0)+"</td>"
+    +"<td>"+fmtPct(r['inst_r']||0)+"</td>"
+    +"<td>"+fmtPct(r['act_r']||0)+"</td>"
+    +"<td>"+fmtPct(r['reg_r']||0)+"</td>"
+    +"<td>"+fmtRoi(roiVal)+"</td>"
+    +"<td>"+fmtRoi(newRoiVal)+"</td>"
+    +"<td>"+fmtPct(r['nr_pct']||0)+"</td>"
+    +"<td>"+(r['rcost']>0?fmtCur(r['rcost']):'—')+"</td>"
     +"</tr>";
   });
   // Total row
   if(visible.length > 0){
     var tSpend=visible.reduce(function(s,r){return s+(r['支出']||0);},0);
-    var tImp=visible.reduce(function(s,r){return s+(r['展示']||0);},0);
-    var tClk=visible.reduce(function(s,r){return s+(r['点击']||0);},0);
-    var tInst=visible.reduce(function(s,r){return s+(r['安装']||0);},0);
-    var tAct=visible.reduce(function(s,r){return s+(r['激活数']||0);},0);
-    var tReg=visible.reduce(function(s,r){return s+(r['注册人数']||0);},0);
-    var tNewR=visible.reduce(function(s,r){return s+(r['新客充值']||0);},0);
-    var tTotalR=visible.reduce(function(s,r){return s+(r['总充值']||0);},0);
+    var tImp=visible.reduce(function(s,r){return s+(r['imp']||0);},0);
+    var tClk=visible.reduce(function(s,r){return s+(r['clk']||0);},0);
+    var tInst=visible.reduce(function(s,r){return s+(r['inst']||0);},0);
+    var tAct=visible.reduce(function(s,r){return s+(r['act']||0);},0);
+    var tReg=visible.reduce(function(s,r){return s+(r['reg']||0);},0);
+    var tNewR=visible.reduce(function(s,r){return s+(r['新客充值金额']||0);},0);
+    var tTotalR=visible.reduce(function(s,r){return s+(r['总充值金额']||0);},0);
     var tCTR=tImp>0?tClk/tImp*100:0;
     var tInstR=tClk>0?tInst/tClk*100:0;
     var tActR=tInst>0?tAct/tInst*100:0;
@@ -355,13 +359,13 @@ function getFiltered(){
       var d=r.date_norm||'';
       if(!byDate[d])byDate[d]={d:d,month:r.month||'',spend:0,imp:0,clk:0,inst:0,act:0,reg:0,newR:0,newRpct:0,newRoi:0,roi:0,totalR:0};
       byDate[d].spend+=r['支出']||0;
-      byDate[d].imp+=r['展示']||0;
-      byDate[d].clk+=r['点击']||0;
-      byDate[d].inst+=r['安装']||0;
-      byDate[d].act+=r['激活数']||0;
-      byDate[d].reg+=r['注册人数']||0;
-      byDate[d].newR+=r['新客充值']||0;
-      byDate[d].totalR+=r['总充值']||0;
+      byDate[d].imp+=r['imp']||0;
+      byDate[d].clk+=r['clk']||0;
+      byDate[d].inst+=r['inst']||0;
+      byDate[d].act+=r['act']||0;
+      byDate[d].reg+=r['reg']||0;
+      byDate[d].newR+=r['新客充值金额']||0;
+      byDate[d].totalR+=r['总充值金额']||0;
     });
     var result=Object.keys(byDate).sort().map(function(d){
       var r=byDate[d];
