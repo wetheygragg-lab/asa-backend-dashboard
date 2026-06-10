@@ -68,6 +68,10 @@ tr:hover td{background:#1c2333}
 .bbtn{background:#1f2937;border:1px solid #374151;color:#94a3b8;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px}
 .bbtn:hover{border-color:#00d084;color:#fff}
 .bbtn.active{background:#00d084;border-color:#00d084;color:#0a0e17;font-weight:600}
+.channel-sel{display:flex;gap:6px;margin-left:8px}
+.chbtn{padding:4px 10px;border-radius:5px;cursor:pointer;font-size:12px;border:1px solid #2e3347;background:#242836;color:#71767b;transition:.15s}
+.chbtn:hover{border-color:#4f46e5;color:#e2e8f0}
+.chbtn.active{background:#4f46e5;color:#fff;border-color:#4f46e5;font-weight:600}
 .camp-filter-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;background:#0f1629;border:1px solid #1f2937;border-radius:10px}
 .camp-filter-bar .cfbtn{background:#1f2937;border:1px solid #374151;color:#94a3b8;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
 .camp-filter-bar .cfbtn:hover{border-color:#f97316;color:#fff}
@@ -81,7 +85,7 @@ tr:hover td{background:#1c2333}
 .daterange{display:flex;gap:6px;align-items:center;margin-left:auto}
 .dr-input{background:#1f2937;border:1px solid #374151;color:#e2e8f0;padding:6px 10px;border-radius:8px;font-size:12px;width:110px}
 .dr-apply{background:#4f46e5;border:none;color:#fff;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500}
-</style></head><body><div class="header"><div class="header-title"><span>ASA</span>v3 &middot; Grafana Style</div><div class="header-sub">Range: 05-01 ~ 06-07 | Updated: 2026-06-08</div></div><div class="filter-bar">  <button class="fbtn active" id="fbAll" onclick="setFilter('all')">全部</button>  <button class="fbtn" id="fb7" onclick="setFilter('7d')">近7天</button>  <button class="fbtn" id="fb30" onclick="setFilter('30d')">近30天</button>  <button class="fbtn" id="fbMonth" onclick="setFilter('month')">本月</button>  <button class="fbtn" id="fbPrev" onclick="setFilter('prev')">上月</button>  <select class="month-sel" id="mSel" onchange="setFilter('month')">    <option value="">全部月份</option>    <option value="2026-05">2026年5月</option>    <option value="2026-06">2026年6月</option>  </select>  <div class="brand-sel">    <button class="bbtn active" id="bbAll" onclick="setBrandFilter('all')">全部</button>    <button class="bbtn" id="bbBrand" onclick="setBrandFilter('brand')">品牌词</button>    <button class="bbtn" id="bbNb" onclick="setBrandFilter('nb')">非品牌词</button>  </div>  <div class="daterange">    <input type="date" class="dr-input" id="drStart" value="2026-05-01">    <span style="color:#64748b;font-size:12px">~</span>    <input type="date" class="dr-input" id="drEnd" value="2026-06-07">    <button class="dr-apply" onclick="applyDateRange()">筛选</button>  </div></div><div class="kpi-grid">
+</style></head><body><div class="header"><div class="header-title"><span>ASA</span>v3 &middot; Grafana Style</div><div class="header-sub">Range: 05-01 ~ 06-07 | Updated: 2026-06-08</div></div><div class="filter-bar">  <button class="fbtn active" id="fbAll" onclick="setFilter('all')">全部</button>  <button class="fbtn" id="fb7" onclick="setFilter('7d')">近7天</button>  <button class="fbtn" id="fb30" onclick="setFilter('30d')">近30天</button>  <button class="fbtn" id="fbMonth" onclick="setFilter('month')">本月</button>  <button class="fbtn" id="fbPrev" onclick="setFilter('prev')">上月</button>  <select class="month-sel" id="mSel" onchange="setFilter('month')">    <option value="">全部月份</option>    <option value="2026-05">2026年5月</option>    <option value="2026-06">2026年6月</option>  </select>  <div class="brand-sel">    <button class="bbtn active" id="bbAll" onclick="setBrandFilter('all')">全部</button>    <button class="bbtn" id="bbBrand" onclick="setBrandFilter('brand')">品牌词</button>    <button class="bbtn" id="bbNb" onclick="setBrandFilter('nb')">非品牌词</button>  </div>  <div class="channel-sel">    <button class="chbtn active" id="chAll" onclick="setChannel('all')">全部</button>    <button class="chbtn" id="chASA" onclick="setChannel('ASA')">ASA</button>    <button class="chbtn" id="chHuawei" onclick="setChannel('华为')">华为</button>  </div>  <div class="daterange">    <input type="date" class="dr-input" id="drStart" value="2026-05-01">    <span style="color:#64748b;font-size:12px">~</span>    <input type="date" class="dr-input" id="drEnd" value="2026-06-07">    <button class="dr-apply" onclick="applyDateRange()">筛选</button>  </div></div><div class="kpi-grid">
 <div class='kpi-card'><div class='kpi-label'>总支出</div><div class='kpi-val'>¥147,624.28</div></div><div class='kpi-card'><div class='kpi-label'>总注册</div><div class='kpi-val'>28,967</div></div><div class='kpi-card'><div class='kpi-label'>总充值</div><div class='kpi-val'>¥162,811.00</div></div><div class='kpi-card'><div class='kpi-label'>新客充值</div><div class='kpi-val'>¥85,820.00</div></div><div class='kpi-card'><div class='kpi-label'>注册成本</div><div class='kpi-val'>¥5.10</div></div><div class='kpi-card'><div class='kpi-label'>总ROI</div><div class='kpi-val'>1.1029</div></div><div class='kpi-card'><div class='kpi-label'>新客ROI</div><div class='kpi-val'>—</div></div><div class='kpi-card'><div class='kpi-label'>激活率</div><div class='kpi-val'>1.54%</div></div>
 </div>
 <div class="charts-row">
@@ -179,6 +183,7 @@ new Chart(document.getElementById('cR'),{type:'line',data:{labels:[05-01,05-02,0
 var cT=null,cR=null;
 var curFilter='all';
 var curBrand='all';
+var curChannel='all';
 var curRange=[null,null];
 var curCampDate='all';
 var curCampBrand='all';
@@ -204,6 +209,7 @@ function getFilteredCamps(){
     if(curCampRange[1]&&md>curCampRange[1])return false;
     if(curCampBrand==='brand'&&r['词类']!=='品牌词')return false;
     if(curCampBrand==='nb'&&r['词类']!=='非品牌词')return false;
+    if(curChannel!=='all'&&r['渠道']!==curChannel)return false;
     return true;
   });
 }
@@ -339,6 +345,44 @@ function getFiltered(){
   var s30=new Date(now);s30.setDate(s30.getDate()-30);
   var s30Str='2026-'+String(s30.getMonth()+1).padStart(2,'0')+'-'+String(s30.getDate()).padStart(2,'0');
 
+  // When channel filter is active, aggregate from campData (dailyData has no channel info)
+  if(curChannel!=='all'){
+    var filtered=campData.filter(function(r){
+      if(r['渠道']!==curChannel)return false;
+      var md=r.date_norm||'';
+      if(curFilter==='7d'&&md<s7Str)return false;
+      else if(curFilter==='30d'&&md<s30Str)return false;
+      else if(curFilter==='month'){var msel=document.getElementById('mSel').value;if(msel&&r.month!==msel)return false;}
+      else if(curFilter==='prev'){var psel=document.getElementById('mSel').value;if(psel&&r.month!==psel)return false;}
+      if(start&&md<start)return false;
+      if(end&&md>end)return false;
+      return true;
+    });
+    // Aggregate by date
+    var byDate={};
+    filtered.forEach(function(r){
+      var d=r.date_norm||'';
+      if(!byDate[d])byDate[d]={d:d,month:r.month||'',spend:0,imp:0,clk:0,inst:0,act:0,reg:0,newR:0,newRpct:0,newRoi:0,roi:0,totalR:0};
+      byDate[d].spend+=r['支出']||0;
+      byDate[d].imp+=r['imp']||0;
+      byDate[d].clk+=r['clk']||0;
+      byDate[d].inst+=r['inst']||0;
+      byDate[d].act+=r['act']||0;
+      byDate[d].reg+=r['reg']||0;
+      byDate[d].newR+=r['新客充值金额']||0;
+      byDate[d].totalR+=r['总充值金额']||0;
+    });
+    var result=Object.keys(byDate).sort().map(function(d){
+      var r=byDate[d];
+      r.newRpct=r.reg>0?r.newR/r.reg*100:0;
+      r.newRoi=r.spend>0?r.newR/r.spend:0;
+      r.roi=r.spend>0?r.totalR/r.spend:0;
+      r.rcost=r.reg>0?r.spend/r.reg:0;
+      return r;
+    });
+    return result;
+  }
+
   // When brand filter is active, aggregate from campData (dailyData has no brand info)
   if(curBrand!=='all'){
     var brandKey=curBrand==='brand'?'品牌词':'非品牌词';
@@ -432,6 +476,7 @@ function renderBrandStats(rows){
   var s7Str='2026-'+String(s7.getMonth()+1).padStart(2,'0')+'-'+String(s7.getDate()).padStart(2,'0');
   var s30Str='2026-'+String(s30.getMonth()+1).padStart(2,'0')+'-'+String(s30.getDate()).padStart(2,'0');
   var filteredCamp=campData.filter(function(r){
+    if(curChannel!=='all'&&r['渠道']!==curChannel)return false;
     var md=r.date_norm||'';
     var rm=r.month||'';
     if(curFilter==='7d'&&md<s7Str)return false;
@@ -536,6 +581,20 @@ function setBrandFilter(b){
   updateCharts(rows);
   updateTable(rows);
   renderBrandStats(rows);
+}
+
+function setChannel(ch){
+  curChannel=ch;
+  document.querySelectorAll('.chbtn').forEach(function(b){b.classList.remove('active');});
+  var el=document.getElementById(ch==='all'?'chAll':ch==='ASA'?'chASA':'chHuawei');
+  if(el)el.classList.add('active');
+  // Re-render all sections with channel filter applied
+  var rows=getFiltered();
+  updateKPIs(rows);
+  updateCharts(rows);
+  updateTable(rows);
+  renderBrandStats(rows);
+  updateCampTable(getFilteredCamps());
 }
 
 function applyDateRange(){
