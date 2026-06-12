@@ -8,7 +8,7 @@ ratios: CTR=点击/展示, IPR=安装/点击, ACR=激活/安装, RGR=注册/激�
 """
 import json, os, pandas as pd
 
-FILE = '/Users/benny/Desktop/听脑ai/广告数据/asa后端数据/asa广告后端分析.xlsx'
+FILE = '/Users/benny/Desktop/听脑ai/广告数据/asa后端数据/商店广告后端数据.xlsx'
 JSON_OUT = '/Users/benny/Desktop/听脑ai/广告数据/asa后端数据/asa_report_data.json'
 
 # ── 1. Load Excel ──────────────────────────────────────────────────────────────
